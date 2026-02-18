@@ -1,15 +1,5 @@
 // time_utils.js
 
-/**
- * Converts an integer representing seconds into a string in the format:
- * - "56 seconds" if seconds < 60 seconds
- * - "12 min and 9 sec" if seconds < 60 minutes
- * - "1:24:23" if seconds < 24 hours
- * - "2 days, 2:34:13" if seconds >= 24 hours
- * 
- * @param {integer} seconds - The number of seconds to convert.
- * @returns {string} The formatted time string.
- */
 
 /**
  * Converts an array of time strings (in the format "H:MM:SS", "MM:SS",
@@ -25,7 +15,7 @@ function totalTimeInSeconds(times) {
 
     for (let i = 0; i < times.length; i++) {
         let timesArray = times[i].split(":");
-        k = timesArray.length;
+        let k = timesArray.length;
 
         for (let j = 0; j < k; j++) {
             totalSeconds += parseInt(timesArray[k - j - 1]) * weights[j];
@@ -36,6 +26,17 @@ function totalTimeInSeconds(times) {
     return totalSeconds;
 }
 
+
+/**
+ * Converts an integer representing seconds into a string in the format:
+ * - "56 seconds" if seconds < 60 seconds
+ * - "12 min and 9 sec" if seconds < 60 minutes
+ * - "1:24:23" if seconds < 24 hours
+ * - "2 days, 2:34:13" if seconds >= 24 hours
+ * 
+ * @param {integer} seconds - The number of seconds to convert.
+ * @returns {string} The formatted time string.
+ */
 function secondsToStringTime(seconds) {
     // Input validation
     if (!Number.isInteger(seconds) || seconds < 0) {
@@ -142,5 +143,6 @@ function makePluralIfNeeded(number, label) {
     }
 }
 
-module.exports = {secondsToStringTime, makePluralIfNeeded, totalTimeInSeconds};
+// Export functions for ES modules
+export { secondsToStringTime, makePluralIfNeeded, totalTimeInSeconds };
 

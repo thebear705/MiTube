@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MiTube - Settings</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>MiTube</h1>
+            <p>YouTube Playlist Enhancer</p>
+        </div>
+        
+        <div class="settings">
+            <div class="setting-item">
+                <div class="setting-info">
+                    <h3>Playlist Total Duration</h3>
+                    <p>Show cumulative duration of all videos in the playlist</p>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="showTotalDuration">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="setting-item">
+                <div class="setting-info">
+                    <h3>Playlist End Time</h3>
+                    <p>Show when the playlist will finish playing</p>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="showEndTime">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="setting-item" style="display: none;">
+                <div class="setting-info">
+                    <h3>Hide Shorts</h3>
+                    <p>Filter out YouTube Shorts</p>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="hideShorts">
+                    <span class="slider"></span>
+                </label>
+            </div>
+            
+            <div class="setting-item" style="display: none;">
+                <div class="setting-info">
+                    <h3>Hide Member-only Videos</h3>
+                    <p>Filter out membership-restricted videos</p>
+                </div>
+                <label class="toggle-switch">
+                    <input type="checkbox" id="hideMemberOnly">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p class="status" id="status">Loading settings...</p>
+            <div class="actions">
+                <button id="resetSettings" class="btn-reset">Reset to Defaults</button>
+            </div>
+        </div>
+    </div>
+    <script type="module" src="popup.js"></script>
+</body>
+</html>
