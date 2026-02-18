@@ -146,3 +146,29 @@ function makePluralIfNeeded(number, label) {
 // Export functions for ES modules
 export { secondsToStringTime, makePluralIfNeeded, totalTimeInSeconds };
 
+/**
+ * Format end time with date if needed
+ * @param {Date} endDate - The calculated end date
+ * @returns {string} Formatted end time string
+ */
+export function formatEndTime(endDate) {
+  const now = new Date();
+  const isSameDay = endDate.toDateString() === now.toDateString();
+  
+  const hours = endDate.getHours().toString().padStart(2, '0');
+  const minutes = endDate.getMinutes().toString().padStart(2, '0');
+  const timeStr = `${hours}:${minutes}`;
+  
+  if (isSameDay) {
+    return `End Time: ${timeStr}`;
+  } else {
+    const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const dayName = dayNames[endDate.getDay()];
+    const day = endDate.getDate();
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+                        'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const month = monthNames[endDate.getMonth()];
+    return `End Time: ${dayName}, ${day} ${month}, ${timeStr}`;
+  }
+}
+

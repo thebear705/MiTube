@@ -1,6 +1,7 @@
 // MiTube Content Script - Main entry point for YouTube page interaction
 import { getSettings } from '../utils/storage.js';
 import { showTotalDuration, hideTotalDuration } from '../features/playlist_duration.js';
+import { showEndTime, hideEndTime } from '../features/playlist_end_time.js';
 
 /**
  * MiTube Content Script
@@ -83,10 +84,13 @@ function applySettingsChanges(changes) {
     }
   }
   
-  // Handle other settings as they're implemented
+  // Handle playlist end time setting
   if ('showEndTime' in changes) {
-    // TODO: Implement end time feature
-    console.log('MiTube: End time setting changed to:', changes.showEndTime.newValue);
+    if (changes.showEndTime.newValue) {
+      showEndTime();
+    } else {
+      hideEndTime();
+    }
   }
 }
 
@@ -151,9 +155,14 @@ function handlePlaylistUpdate() {
   }
   
   updateTimeout = setTimeout(() => {
-    // Only update if the feature is enabled
+    // Update duration if enabled
     if (currentSettings.showTotalDuration) {
       showTotalDuration();
+    }
+    
+    // Update end time if enabled
+    if (currentSettings.showEndTime) {
+      showEndTime();
     }
   }, 250); // Only run after 250ms of no activity
 }
