@@ -1,12 +1,6 @@
 // Background service worker for MiTube Chrome Extension
 
-// Default settings for the extension
-const DEFAULT_SETTINGS = {
-  showTotalDuration: true,
-  showEndTime: true,
-  hideShorts: false,
-  hideMemberOnly: false
-};
+import { DEFAULT_SETTINGS } from './utils/constants.js';
 
 /**
  * Handle extension installation

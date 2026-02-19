@@ -20,7 +20,7 @@
     {
       "matches": ["https://www.youtube.com/*", "https://m.youtube.com/*"],
       "js": ["content/loader.js"],
-      
+      "type": "module",
       "run_at": "document_idle"
     }
   ],
@@ -35,6 +35,7 @@
     "default_title": "MiTube - YouTube Playlist Enhancer"
   },
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "background.js",
+    "type": "module"
   }
 }

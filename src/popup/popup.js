@@ -9,16 +9,12 @@ const elements = {
   hideShorts: document.getElementById('hideShorts'),
   hideMemberOnly: document.getElementById('hideMemberOnly'),
   status: document.getElementById('status'),
-  resetSettings: document.getElementById('resetSettings')
+  resetSettings: document.getElementById('resetSettings'),
+  themeToggle: document.getElementById('themeToggle')
 };
 
-// Default settings
-const DEFAULT_SETTINGS = {
-  showTotalDuration: true,
-  showEndTime: true,
-  hideShorts: false,
-  hideMemberOnly: false
-};
+// Import default settings from shared constants
+import { DEFAULT_SETTINGS } from '../utils/constants.js';
 
 /**
  * Initialize the popup
@@ -27,6 +23,9 @@ async function init() {
   try {
     // Load current settings
     const settings = await getSettings();
+    
+    // Apply theme first
+    applyTheme(settings.theme || 'system');
     
     // Update UI with current settings
     updateUI(settings);
@@ -64,6 +63,9 @@ function setupEventListeners() {
   elements.hideShorts.addEventListener('change', (e) => handleToggleChange('hideShorts', e.target.checked));
   elements.hideMemberOnly.addEventListener('change', (e) => handleToggleChange('hideMemberOnly', e.target.checked));
   
+  // Theme toggle
+  elements.themeToggle.addEventListener('click', handleThemeToggle);
+  
   // Reset button
   elements.resetSettings.addEventListener('click', handleResetSettings);
 }
@@ -94,6 +96,87 @@ async function handleToggleChange(settingKey, newValue) {
 }
 
 /**
+ * Handle theme toggle button
+ */
+function handleThemeToggle() {
+  const currentTheme = getCurrentTheme();
+  let newTheme;
+  
+  // Cycle through themes: light → dark → system → light
+  if (currentTheme === 'light') {
+    newTheme = 'dark';
+  } else if (currentTheme === 'dark') {
+    newTheme = 'system';
+  } else {
+    newTheme = 'light';
+  }
+  
+  // Apply theme immediately
+  applyTheme(newTheme);
+  
+  // Save to storage
+  setSettings({ theme: newTheme });
+  
+  // Show status
+  const themeLabels = {
+    'light': 'Light mode',
+    'dark': 'Dark mode', 
+    'system': 'System theme'
+  };
+  showStatus(`${themeLabels[newTheme]} activated`, 'success');
+}
+
+/**
+ * Get current theme from data-theme attribute or system preference
+ */
+function getCurrentTheme() {
+  const theme = document.body.getAttribute('data-theme');
+  if (theme) return theme;
+  
+  // Return 'system' when no data-theme is set
+  return 'system';
+}
+
+/**
+ * Apply theme to the popup
+ * @param {string} theme - 'light', 'dark', or 'system'
+ */
+function applyTheme(theme) {
+  // Remove existing theme classes
+  document.body.removeAttribute('data-theme');
+  
+  if (theme === 'light') {
+    document.body.setAttribute('data-theme', 'light');
+  } else if (theme === 'dark') {
+    document.body.setAttribute('data-theme', 'dark');
+  } else {
+    // System theme - remove attribute to let CSS media query handle it
+  }
+  
+  // Update icon visibility
+  updateThemeIcon(theme);
+}
+
+/**
+ * Update theme toggle button icon visibility
+ * @param {string} theme - Current theme
+ */
+function updateThemeIcon(theme) {
+  const toggle = elements.themeToggle;
+  
+  // Remove all icon classes
+  toggle.classList.remove('theme-light', 'theme-dark', 'theme-system');
+  
+  if (theme === 'light') {
+    toggle.classList.add('theme-light');
+  } else if (theme === 'dark') {
+    toggle.classList.add('theme-dark');
+  } else {
+    toggle.classList.add('theme-system');
+  }
+}
+
+/**
  * Handle reset settings button
  */
 async function handleResetSettings() {
@@ -103,6 +186,9 @@ async function handleResetSettings() {
     
     // Update UI
     updateUI(DEFAULT_SETTINGS);
+    
+    // Apply default theme
+    applyTheme(DEFAULT_SETTINGS.theme);
     
     // Show success status
     showStatus('Settings reset to defaults', 'success');

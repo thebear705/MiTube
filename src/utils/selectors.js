@@ -6,35 +6,11 @@
 * extension, making it easier to maintain and update them as needed.
 */
 
-// YouTube Playlist DOM Selectors
-export const YOUTUBE_SELECTORS = {
-  // Main playlist container
-  playlistContainer: '#playlist',
-  
-  // Playlist title and header area
-  playlistTitle: '.title.style-scope.ytd-playlist-panel-renderer',
-  playlistHeader: '.header.style-scope.ytd-playlist-panel-renderer',
-  
-  // Video time elements in playlist
-  videoTimeElements: '.yt-badge-shape__text',
-  videoDuration: '.ytd-thumbnail-overlay-time-status-renderer',
-  
-  // Playlist items
-  playlistItems: 'ytd-playlist-panel-video-renderer',
-  playlistItem: 'ytd-playlist-panel-video-renderer',
-  currentlyPlayingItem: 'ytd-playlist-panel-video-renderer[selected]',
-  
-  // Video player
-  videoPlayer: '#movie_player video',
-  
-  // Queue/Up next elements
-  queueTitle: '.title.style-scope.ytd-playlist-panel-renderer',
-  queueContainer: '#items.style-scope.ytd-playlist-panel-renderer',
-  
-  // Additional selectors for future features
-  shortsIndicator: '.ytd-thumbnail-overlay-side-panel-renderer',
-  memberOnlyBadge: '.ytd-badge-supported-renderer'
-};
+import { YOUTUBE_SELECTORS } from './constants.js';
+import { parseTimeToSeconds } from './time_utils.js';
+
+// YouTube Playlist DOM Selectors (re-exported from constants for backward compatibility)
+export { YOUTUBE_SELECTORS };
 
 // Utility function to get playlist container
 export function getPlaylistContainer() {
@@ -116,7 +92,7 @@ export function getWatchedVideosDurationBeforeCurrent() {
   for (let i = 0; i < currentIndex; i++) {
     if (timeElements[i]) {
       const timeText = timeElements[i].textContent.trim();
-      const durationSeconds = parseVideoTimeToSeconds(timeText);
+      const durationSeconds = parseTimeToSeconds(timeText);
       watchedDuration += durationSeconds;
     }
   }
@@ -124,26 +100,3 @@ export function getWatchedVideosDurationBeforeCurrent() {
   return watchedDuration;
 }
 
-/**
- * Parse video time string to seconds
- * @param {string} timeString - Time string in format "H:MM:SS", "MM:SS", or "SS"
- * @returns {number} Duration in seconds
- */
-function parseVideoTimeToSeconds(timeString) {
-  if (!timeString) return 0;
-  
-  const parts = timeString.split(':').map(part => parseInt(part, 10));
-  
-  if (parts.length === 1) {
-    // SS format
-    return parts[0] || 0;
-  } else if (parts.length === 2) {
-    // MM:SS format
-    return (parts[0] * 60) + (parts[1] || 0);
-  } else if (parts.length === 3) {
-    // H:MM:SS format
-    return (parts[0] * 3600) + (parts[1] * 60) + (parts[2] || 0);
-  }
-  
-  return 0;
-}

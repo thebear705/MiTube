@@ -2,6 +2,8 @@
 import { getSettings } from '../utils/storage.js';
 import { showTotalDuration, hideTotalDuration } from '../features/playlist_duration.js';
 import { showEndTime, hideEndTime } from '../features/playlist_end_time.js';
+import { debounce } from '../utils/time_utils.js';
+import { PERFORMANCE } from '../utils/constants.js';
 
 /**
  * MiTube Content Script
@@ -21,6 +23,14 @@ let currentSettings = {
 let isInitialized = false;
 let playlistObserver = null;
 let settingsListener = null;
+
+// Performance optimization: Cache calculated values
+let calculationCache = {
+  totalDuration: null,
+  endTime: null,
+  lastCalculationTime: 0,
+  cacheValid: false
+};
 
 /**
  * Initialize the content script
@@ -144,28 +154,24 @@ function observePlaylist(targetNode) {
 }
 
 /**
- * Handle playlist content updates with debouncing
+ * Handle playlist content updates with debouncing and caching
  */
-let updateTimeout = null;
-
-function handlePlaylistUpdate() {
-  // Debounce updates to prevent performance issues
-  if (updateTimeout) {
-    clearTimeout(updateTimeout);
+const handlePlaylistUpdate = debounce(() => {
+  // Clear cache when playlist content changes
+  calculationCache.cacheValid = false;
+  calculationCache.totalDuration = null;
+  calculationCache.endTime = null;
+  
+  // Update duration if enabled
+  if (currentSettings.showTotalDuration) {
+    showTotalDuration(calculationCache);
   }
   
-  updateTimeout = setTimeout(() => {
-    // Update duration if enabled
-    if (currentSettings.showTotalDuration) {
-      showTotalDuration();
-    }
-    
-    // Update end time if enabled
-    if (currentSettings.showEndTime) {
-      showEndTime();
-    }
-  }, 250); // Only run after 250ms of no activity
-}
+  // Update end time if enabled
+  if (currentSettings.showEndTime) {
+    showEndTime(calculationCache);
+  }
+}, PERFORMANCE.DEBOUNCE_DELAY);
 
 /**
  * Cleanup function to disconnect observers

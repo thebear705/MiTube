@@ -2,6 +2,8 @@
 
 import { totalTimeInSeconds, secondsToStringTime } from '../utils/time_utils.js';
 import { getVideoTimeElements, getPlaylistTitleElement } from '../utils/selectors.js';
+import { createInfoElement, removeElementById, insertAfter } from '../utils/dom.js';
+import { FEATURE_ELEMENT_IDS, STYLES } from '../utils/constants.js';
 
 /**
  * Playlist Duration Feature Module
@@ -10,13 +12,19 @@ import { getVideoTimeElements, getPlaylistTitleElement } from '../utils/selector
  * It provides functions to calculate, display, and remove the duration display.
  */
 
-const DURATION_ELEMENT_ID = 'miTube-total-duration';
+const DURATION_ELEMENT_ID = FEATURE_ELEMENT_IDS.totalDuration;
 
 /**
  * Calculates the total duration of all videos in the playlist
+ * @param {Object} cache - Optional calculation cache
  * @returns {number|null} Total duration in seconds, or null if no videos found
  */
-export function calculateTotalDuration() {
+export function calculateTotalDuration(cache = null) {
+  // Use cache if available and valid
+  if (cache && cache.cacheValid && cache.totalDuration !== null) {
+    return cache.totalDuration;
+  }
+
   const timeElements = getVideoTimeElements();
   
   if (timeElements.length === 0) {
@@ -24,7 +32,16 @@ export function calculateTotalDuration() {
   }
 
   const times = Array.from(timeElements).map(element => element.textContent.trim());
-  return totalTimeInSeconds(times);
+  const totalSeconds = totalTimeInSeconds(times);
+
+  // Update cache if provided
+  if (cache !== null) {
+    cache.totalDuration = totalSeconds;
+    cache.cacheValid = true;
+    cache.lastCalculationTime = Date.now();
+  }
+
+  return totalSeconds;
 }
 
 /**
@@ -42,30 +59,26 @@ export function displayTotalDuration(totalSeconds) {
   // Remove existing duration element if present
   removeTotalDuration();
 
-  // Create duration display element
-  const durationElement = document.createElement('div');
-  durationElement.id = DURATION_ELEMENT_ID;
-  durationElement.style.color = 'var(--yt-spec-text-primary, #ffffff)';
-  durationElement.style.fontSize = '12px';
-  durationElement.style.opacity = '0.8';
-  durationElement.style.marginTop = '4px';
-  durationElement.style.fontFamily = 'inherit';
-  
+  // Create duration display element using utility
   const durationText = secondsToStringTime(totalSeconds);
-  durationElement.textContent = `Total Duration: ${durationText}`;
+  const durationElement = createInfoElement(
+    DURATION_ELEMENT_ID, 
+    `Total Duration: ${durationText}`,
+    {
+      color: STYLES.durationColor,
+      marginTop: STYLES.marginTop
+    }
+  );
 
   // Insert after the title element
-  titleElement.parentNode.insertBefore(durationElement, titleElement.nextSibling);
+  insertAfter(durationElement, titleElement, titleElement.parentNode);
 }
 
 /**
  * Removes the total duration display from the playlist
  */
 export function removeTotalDuration() {
-  const existingElement = document.getElementById(DURATION_ELEMENT_ID);
-  if (existingElement) {
-    existingElement.remove();
-  }
+  removeElementById(DURATION_ELEMENT_ID);
 }
 
 /**
@@ -83,10 +96,11 @@ export function updateTotalDuration(totalSeconds) {
 
 /**
  * Main function to calculate and display total duration
+ * @param {Object} cache - Optional calculation cache
  * @returns {boolean} True if duration was calculated and displayed, false otherwise
  */
-export function showTotalDuration() {
-  const totalSeconds = calculateTotalDuration();
+export function showTotalDuration(cache = null) {
+  const totalSeconds = calculateTotalDuration(cache);
   
   if (totalSeconds !== null) {
     displayTotalDuration(totalSeconds);

@@ -1,15 +1,54 @@
 /* MiTube Popup Styles */
 
-:root {
+/* Light theme (default) */
+body {
     --primary-color: #202329;
     --secondary-color: #1877f2;
     --text-color: #1a1a1a;
     --text-muted: #666;
     --border-color: #e1e4e8;
     --bg-color: #ffffff;
+    --card-bg: #f8f9fa;
+    --card-hover-bg: #f0f2f5;
     --success-color: #22c55e;
     --warning-color: #f59e0b;
     --error-color: #ef4444;
+    --shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    --transition-speed: 0.3s;
+}
+
+/* Dark theme */
+body[data-theme="dark"] {
+    --primary-color: #f0f0f0;
+    --secondary-color: #4f8cff;
+    --text-color: #e4e4e4;
+    --text-muted: #a0a0a0;
+    --border-color: #3a3a3a;
+    --bg-color: #1a1a1a;
+    --card-bg: #2d2d2d;
+    --card-hover-bg: #3a3a3a;
+    --success-color: #16a34a;
+    --warning-color: #d97706;
+    --error-color: #dc2626;
+    --shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* System theme detection */
+@media (prefers-color-scheme: dark) {
+    body:not([data-theme="light"]) {
+        --primary-color: #f0f0f0;
+        --secondary-color: #4f8cff;
+        --text-color: #e4e4e4;
+        --text-muted: #a0a0a0;
+        --border-color: #3a3a3a;
+        --bg-color: #1a1a1a;
+        --card-bg: #2d2d2d;
+        --card-hover-bg: #3a3a3a;
+        --success-color: #16a34a;
+        --warning-color: #d97706;
+        --error-color: #dc2626;
+        --shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
 }
 
 * {
@@ -26,7 +65,9 @@ body {
     color: var(--text-color);
     font-size: 14px;
     line-height: 1.4;
+    transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
 }
+
 
 .container {
     padding: 16px;
@@ -63,17 +104,16 @@ body {
     align-items: center;
     justify-content: space-between;
     padding: 12px;
-    background-color: #f8f9fa;
+    background-color: var(--card-bg);
     border-radius: 8px;
     border: 1px solid var(--border-color);
     transition: all 0.2s ease;
-
-    padding-left: 8px;
+    box-shadow: var(--shadow);
 }
 
 .setting-item:hover {
-    background-color: #f0f2f5;
-    border-color: #d1d5db;
+    background-color: var(--card-hover-bg);
+    border-color: var(--border-color);
 }
 
 .setting-info {
@@ -133,6 +173,81 @@ input:checked + .slider {
     background-color: var(--secondary-color);
 }
 
+/* Theme toggle button styles */
+.theme-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    width: 36px;
+    height: 36px;
+    position: relative;
+}
+
+.theme-toggle:hover {
+    background-color: var(--card-hover-bg);
+    box-shadow: var(--shadow);
+}
+
+.theme-toggle span {
+    position: absolute;
+    opacity: 0;
+    transform: scale(0.5);
+    transition: all 0.3s ease;
+    font-size: 18px;
+}
+
+/* Default: show icon-sun (light mode) */
+.theme-toggle .icon-sun {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Hide sun, show moon for dark */
+body[data-theme="dark"] .theme-toggle .icon-sun {
+    opacity: 0;
+    transform: scale(0.5);
+}
+body[data-theme="dark"] .theme-toggle .icon-moon {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Hide sun and moon, show system icon when NO data-theme (system mode) */
+.theme-toggle .icon-system {
+    opacity: 0;
+    transform: scale(0.5);
+}
+
+/* Only show system icon when data-theme is NOT set */
+body:not([data-theme]) .theme-toggle .icon-sun,
+body:not([data-theme]) .theme-toggle .icon-moon {
+    opacity: 0;
+    transform: scale(0.5);
+}
+
+body:not([data-theme]) .theme-toggle .icon-system {
+    opacity: 1;
+    transform: scale(1);
+}
+
+/* Header content layout */
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.header h1 {
+    margin: 0;
+}
+
 input:checked + .slider:before {
     transform: translateX(20px);
 }
@@ -166,7 +281,7 @@ input:checked + .slider:before {
 .btn-reset {
     flex: 1;
     padding: 8px 12px;
-    background-color: #fff;
+    background-color: var(--card-bg);
     color: var(--error-color);
     border: 1px solid var(--error-color);
     border-radius: 6px;

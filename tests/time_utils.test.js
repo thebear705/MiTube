@@ -1,5 +1,4 @@
-const { secondsToStringTime, makePluralIfNeeded } = require(
-    '../src/utils/time_utils');
+import { secondsToStringTime, makePluralIfNeeded } from '../src/utils/time_utils.js';
 
 // Pluralization tests
 describe('makePluralIfNeeded Tests', () => {

@@ -1,5 +1,33 @@
 // time_utils.js
 
+import { PERFORMANCE } from './constants.js';
+
+/**
+ * Parse a single time string to seconds
+ * Supports formats: "H:MM:SS", "MM:SS", "SS"
+ * @param {string} timeString - Time string to parse
+ * @returns {number} Duration in seconds
+ */
+export function parseTimeToSeconds(timeString) {
+  if (!timeString || typeof timeString !== 'string') {
+    return 0;
+  }
+  
+  const parts = timeString.split(':').map(part => parseInt(part, 10));
+  
+  if (parts.length === 1) {
+    // SS format
+    return parts[0] || 0;
+  } else if (parts.length === 2) {
+    // MM:SS format
+    return (parts[0] * 60) + (parts[1] || 0);
+  } else if (parts.length === 3) {
+    // H:MM:SS format
+    return (parts[0] * 3600) + (parts[1] * 60) + (parts[2] || 0);
+  }
+  
+  return 0;
+}
 
 /**
  * Converts an array of time strings (in the format "H:MM:SS", "MM:SS",
@@ -9,18 +37,15 @@
  * @returns {integer} The total time in seconds represented by the input array
  *  of time strings.
  */
-function totalTimeInSeconds(times) {
-    const weights = [1, 60, 3600, 86400];
+export function totalTimeInSeconds(times) {
+    if (!Array.isArray(times)) {
+        return 0;
+    }
+
     let totalSeconds = 0;
 
     for (let i = 0; i < times.length; i++) {
-        let timesArray = times[i].split(":");
-        let k = timesArray.length;
-
-        for (let j = 0; j < k; j++) {
-            totalSeconds += parseInt(timesArray[k - j - 1]) * weights[j];
-            // console.log("adding" + parseInt(timesArray[k - j - 1]) * weights[j] + "seconds" );
-        }
+        totalSeconds += parseTimeToSeconds(times[i]);
     }
 
     return totalSeconds;
@@ -144,7 +169,7 @@ function makePluralIfNeeded(number, label) {
 }
 
 // Export functions for ES modules
-export { secondsToStringTime, makePluralIfNeeded, totalTimeInSeconds };
+export { secondsToStringTime, makePluralIfNeeded };
 
 /**
  * Format end time with date if needed
@@ -170,5 +195,19 @@ export function formatEndTime(endDate) {
     const month = monthNames[endDate.getMonth()];
     return `End Time: ${dayName}, ${day} ${month}, ${timeStr}`;
   }
+}
+
+/**
+ * Debounce function to limit function calls
+ * @param {Function} func - Function to debounce
+ * @param {number} delay - Delay in milliseconds
+ * @returns {Function} Debounced function
+ */
+export function debounce(func, delay = PERFORMANCE.DEBOUNCE_DELAY) {
+  let timeoutId;
+  return function(...args) {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => func.apply(this, args), delay);
+  };
 }
 
