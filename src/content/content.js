@@ -13,8 +13,9 @@ import { PERFORMANCE } from '../utils/constants.js';
  */
 
 // State management
+// TODO: This should be set the DEFAULT_SETTINGS from constants.js
 let currentSettings = {
-  showTotalDuration: true,
+  showTotalDuration: false,
   showEndTime: true,
   hideShorts: false,
   hideMemberOnly: false
@@ -32,6 +33,39 @@ let calculationCache = {
   cacheValid: false
 };
 
+
+// START: MAIN SCRIPT
+// Initialize when DOM is ready
+if (document.readyState === 'complete' || document.readyState !== 'loading') {
+  initialize();
+} else {
+  document.addEventListener('DOMContentLoaded', initialize);
+}
+
+// Handle page navigation (for SPA behavior) - optimized version
+if (window.location.hostname === 'www.youtube.com') {
+  let currentUrl = window.location.href;
+  
+  // Use a less aggressive approach for URL changes
+  const urlCheckInterval = setInterval(() => {
+    const newUrl = window.location.href;
+    if (newUrl !== currentUrl) {
+      currentUrl = newUrl;
+      cleanup();
+      initialize();
+    }
+  }, 1000); // Check every second instead of watching all DOM changes
+  
+  // TODO: Clarify if this happens every time the page is loaded.
+  // Cleanup interval when content script is destroyed
+  window.addEventListener('beforeunload', () => {
+    clearInterval(urlCheckInterval);
+  });
+}
+// END: MAIN SCRIPT
+
+
+// BEGIN: FUNCTIONS
 /**
  * Initialize the content script
  */
@@ -59,13 +93,13 @@ async function initialize() {
 }
 
 /**
- * Set up listener for storage changes
+ * Chrome Storage Settings Listener.
  */
 function setupSettingsListener() {
   if (settingsListener) return;
   
   settingsListener = (changes, namespace) => {
-    if (namespace === 'sync' && changes) {
+    if (namespace === 'sync' && changes) { // TODO:Find out how this works specifically with the &&
       // Update current settings - extract newValue from each change
       for (const key in changes) {
         currentSettings[key] = changes[key].newValue;
@@ -76,7 +110,9 @@ function setupSettingsListener() {
       applySettingsChanges(changes);
     }
   };
-  
+  /**  Monitor Chrome Storage Changes, when settings are changed in the pop up
+  They update Chrome Storage.
+  */
   chrome.storage.onChanged.addListener(settingsListener);
 }
 
@@ -105,7 +141,8 @@ function applySettingsChanges(changes) {
 }
 
 /**
- * Start observing playlist for changes
+ * Start observing playlist for changes. This is used to update the playlist
+ * times whenever a 
  */
 function startPlaylistObservation() {
   const playlistContainer = document.getElementById('playlist');
@@ -135,6 +172,9 @@ function startPlaylistObservation() {
  * Observe playlist for content changes
  * @param {Element} targetNode - The playlist container element
  */
+/** TODO: This function seems unnessearry. Can't we place the code in 
+* startPlaylistObservation
+*/
 function observePlaylist(targetNode) {
   if (playlistObserver) {
     playlistObserver.disconnect();
@@ -189,30 +229,4 @@ function cleanup() {
   
   isInitialized = false;
 }
-
-// Initialize when DOM is ready
-if (document.readyState === 'complete' || document.readyState !== 'loading') {
-  initialize();
-} else {
-  document.addEventListener('DOMContentLoaded', initialize);
-}
-
-// Handle page navigation (for SPA behavior) - optimized version
-if (window.location.hostname === 'www.youtube.com') {
-  let currentUrl = window.location.href;
-  
-  // Use a less aggressive approach for URL changes
-  const urlCheckInterval = setInterval(() => {
-    const newUrl = window.location.href;
-    if (newUrl !== currentUrl) {
-      currentUrl = newUrl;
-      cleanup();
-      initialize();
-    }
-  }, 1000); // Check every second instead of watching all DOM changes
-  
-  // Cleanup interval when content script is destroyed
-  window.addEventListener('beforeunload', () => {
-    clearInterval(urlCheckInterval);
-  });
-}
+// END: FUNCTIONS

@@ -5,7 +5,7 @@
  * Used across background.js, popup.js, and content scripts
  */
 export const DEFAULT_SETTINGS = {
-  showTotalDuration: true,
+  showTotalDuration: false,
   showEndTime: true,
   hideShorts: false,
   hideMemberOnly: false,

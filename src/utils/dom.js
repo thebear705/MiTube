@@ -1,6 +1,6 @@
 // DOM utilities for MiTube Chrome Extension
 
-import { FEATURE_ELEMENT_IDS, STYLES } from './constants.js';
+import { FEATURE_ELEMENT_IDS, STYLES, YOUTUBE_SELECTORS } from './constants.js';
 
 /**
  * Create a styled info element for displaying duration or end time
@@ -53,7 +53,7 @@ export function removeElementById(id) {
  * @returns {Element|null} The playlist container or null if not found
  */
 export function getPlaylistContainer() {
-  return document.querySelector('#playlist');
+  return document.querySelector(YOUTUBE_SELECTORS.playlistContainer);
 }
 
 /**
@@ -63,7 +63,7 @@ export function getPlaylistContainer() {
 export function getPlaylistTitleElement() {
   const container = getPlaylistContainer();
   if (!container) return null;
-  return container.querySelector('.title.style-scope.ytd-playlist-panel-renderer');
+  return container.querySelector(YOUTUBE_SELECTORS.playlistTitle);
 }
 
 /**
@@ -73,7 +73,7 @@ export function getPlaylistTitleElement() {
 export function getVideoTimeElements() {
   const container = getPlaylistContainer();
   if (!container) return [];
-  return container.querySelectorAll('.yt-badge-shape__text');
+  return container.querySelectorAll(YOUTUBE_SELECTORS.videoTimeElements);
 }
 
 /**
@@ -83,7 +83,7 @@ export function getVideoTimeElements() {
 export function getCurrentlyPlayingItem() {
   const container = getPlaylistContainer();
   if (!container) return null;
-  return container.querySelector('ytd-playlist-panel-video-renderer[selected]');
+  return container.querySelector(YOUTUBE_SELECTORS.currentlyPlayingItem);
 }
 
 /**
@@ -94,7 +94,7 @@ export function getCurrentlyPlayingIndex() {
   const container = getPlaylistContainer();
   if (!container) return -1;
   
-  const playlistItems = container.querySelectorAll('ytd-playlist-panel-video-renderer');
+  const playlistItems = container.querySelectorAll(YOUTUBE_SELECTORS.playlistItems);
   const currentItem = getCurrentlyPlayingItem();
   
   if (!currentItem) return -1;
@@ -107,7 +107,7 @@ export function getCurrentlyPlayingIndex() {
  * @returns {number} Elapsed time in seconds, or 0 if no video is playing
  */
 export function getCurrentVideoElapsedTime() {
-  const video = document.querySelector('#movie_player video');
+  const video = document.querySelector(YOUTUBE_SELECTORS.videoPlayer);
   return video ? video.currentTime : 0;
 }
 

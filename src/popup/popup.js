@@ -2,7 +2,7 @@
 
 import { getSettings, setSettings } from '../utils/storage.js';
 
-// DOM elements
+/** Popup DOM elements */
 const elements = {
   showTotalDuration: document.getElementById('showTotalDuration'),
   showEndTime: document.getElementById('showEndTime'),
@@ -42,10 +42,11 @@ async function init() {
 }
 
 /**
- * Update UI elements with current settings
+ * Update the Popup UI elements with current settings
  * @param {Object} settings - Current settings object
  */
 function updateUI(settings) {
+  // TODO: Can we use a loop to update all the settings in one line?
   // Update toggle states
   elements.showTotalDuration.checked = settings.showTotalDuration ?? DEFAULT_SETTINGS.showTotalDuration;
   elements.showEndTime.checked = settings.showEndTime ?? DEFAULT_SETTINGS.showEndTime;
@@ -57,6 +58,7 @@ function updateUI(settings) {
  * Set up event listeners for UI interactions
  */
 function setupEventListeners() {
+  // TODO: Can we use a loop here as well?
   // Toggle listeners
   elements.showTotalDuration.addEventListener('change', (e) => handleToggleChange('showTotalDuration', e.target.checked));
   elements.showEndTime.addEventListener('change', (e) => handleToggleChange('showEndTime', e.target.checked));

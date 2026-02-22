@@ -1,7 +1,8 @@
 // playlist_duration.js
 
 import { totalTimeInSeconds, secondsToStringTime } from '../utils/time_utils.js';
-import { getVideoTimeElements, getPlaylistTitleElement } from '../utils/selectors.js';
+import { getVideoTimeElements, getPlaylistTitleElement } from '../utils/dom.js';
+import { YOUTUBE_SELECTORS } from '../utils/constants.js';
 import { createInfoElement, removeElementById, insertAfter } from '../utils/dom.js';
 import { FEATURE_ELEMENT_IDS, STYLES } from '../utils/constants.js';
 

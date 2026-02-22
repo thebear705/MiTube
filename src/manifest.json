@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "MiTube",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Enhance your YouTube playlist experience with duration tracking and end time prediction",
   "icons": {
     "16": "icons/icon16.png",
@@ -11,7 +11,8 @@
   "permissions": [
     "storage",
     "activeTab",
-    "scripting"
+    "scripting",
+    "notifications"
   ],
   "host_permissions": [
     "https://www.youtube.com/*"

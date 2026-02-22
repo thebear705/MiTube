@@ -1,10 +1,40 @@
 // playlist_end_time.js
 
 import { calculateTotalDuration } from './playlist_duration.js';
-import { formatEndTime } from '../utils/time_utils.js';
-import { getPlaylistTitleElement, getCurrentVideoElapsedTime, getWatchedVideosDurationBeforeCurrent, getCurrentlyPlayingIndex } from '../utils/selectors.js';
+import { formatEndTime, parseTimeToSeconds } from '../utils/time_utils.js';
+import { getPlaylistTitleElement, getCurrentVideoElapsedTime, getCurrentlyPlayingIndex } from '../utils/dom.js';
+import { YOUTUBE_SELECTORS } from '../utils/constants.js';
 import { createInfoElement, removeElementById, insertAfter } from '../utils/dom.js';
 import { FEATURE_ELEMENT_IDS, STYLES } from '../utils/constants.js';
+
+/**
+ * Calculate the total duration of videos that have been watched (before current video)
+ * @returns {number} Total watched duration in seconds
+ */
+export function getWatchedVideosDurationBeforeCurrent() {
+  const currentIndex = getCurrentlyPlayingIndex();
+  if (currentIndex <= 0) return 0; // No videos before current
+  
+  const container = document.querySelector(YOUTUBE_SELECTORS.playlistContainer);
+  if (!container) return 0;
+  
+  const playlistItems = container.querySelectorAll(YOUTUBE_SELECTORS.playlistItems);
+  let watchedDuration = 0;
+  
+  // Get time elements for all playlist items
+  const timeElements = container.querySelectorAll(YOUTUBE_SELECTORS.videoTimeElements);
+  
+  // Sum durations of all videos before the current one
+  for (let i = 0; i < currentIndex; i++) {
+    if (timeElements[i]) {
+      const timeText = timeElements[i].textContent.trim();
+      const durationSeconds = parseTimeToSeconds(timeText);
+      watchedDuration += durationSeconds;
+    }
+  }
+  
+  return watchedDuration;
+}
 
 /**
  * Playlist End Time Feature Module

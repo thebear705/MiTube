@@ -9,9 +9,11 @@ chrome.runtime.onInstalled.addListener(async (details) => {
   console.log('MiTube: Extension installed/updated', details);
   
   try {
+    
     // Set default settings on install/update
+    // TODO: Only set default settings if they don't exist.
     await chrome.storage.sync.set(DEFAULT_SETTINGS);
-    console.log('MiTube: Default settings applied');
+    console.log('MiTub3: Default settings applied');
     
     // Show welcome notification on first install
     if (details.reason === 'install') {
@@ -30,9 +32,11 @@ chrome.runtime.onInstalled.addListener(async (details) => {
 /**
  * Handle messages from content scripts
  */
+// TODO: This does nothing at the moment find out why and if it's needed.
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  console.log('Message Interceptped by background.js', message);
   if (message.action === 'settingsChanged') {
-    console.log('MiTube: Settings changed in content script:', message);
+    console.log('MiTub3: Settings changed in content script:', message);
     // Forward to other tabs if needed
     chrome.tabs.query({}, (tabs) => {
       tabs.forEach(tab => {
