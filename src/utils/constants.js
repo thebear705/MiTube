@@ -5,11 +5,30 @@
  * Used across background.js, popup.js, and content scripts
  */
 export const DEFAULT_SETTINGS = {
+  // Playlists
   showTotalDuration: false,
   showEndTime: true,
+  clearPlayed: false,
+  
+  // Video Player
+  miniPlayerButton: false,
+  videoPlayerEndTime: false,
+  timeLeftToggle: false,
+  
+  // Video Feed & Search Results
   hideShorts: false,
+  hideAutoDubbed: false,
   hideMemberOnly: false,
-  theme: 'system'  // 'light', 'dark', or 'system'
+  
+  // UI & Theme
+  theme: 'system',  // 'light', 'dark', or 'system'
+  
+  // Dropdown states
+  dropdownStates: {
+    playlists: false,
+    videoPlayer: false,
+    videoFeed: false
+  }
 };
 
 /**
@@ -72,5 +91,14 @@ export const YOUTUBE_SELECTORS = {
   
   // Additional selectors for future features
   shortsIndicator: '.ytd-thumbnail-overlay-side-panel-renderer',
-  memberOnlyBadge: '.ytd-badge-supported-renderer'
+  memberOnlyBadge: '.ytd-badge-supported-renderer',
+  
+  // Navigation sidebar
+  shortsNavButton: 'a[title="Shorts"]',
+  
+  // Homepage shorts sections
+  shortsHomeShelf: 'ytd-rich-shelf-renderer[is-shorts]',
+  
+  // Search results shorts
+  shortsSearchShelf: 'grid-shelf-view-model'
 };

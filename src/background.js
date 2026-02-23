@@ -9,11 +9,14 @@ chrome.runtime.onInstalled.addListener(async (details) => {
   console.log('MiTube: Extension installed/updated', details);
   
   try {
-    
-    // Set default settings on install/update
-    // TODO: Only set default settings if they don't exist.
-    await chrome.storage.sync.set(DEFAULT_SETTINGS);
-    console.log('MiTub3: Default settings applied');
+    // Only set default settings if no settings exist
+    const existing = await chrome.storage.sync.get(null);
+    if (Object.keys(existing).length === 0) {
+      await chrome.storage.sync.set(DEFAULT_SETTINGS);
+      console.log('MiTube: Default settings applied');
+    } else {
+      console.log('MiTube: Existing settings preserved');
+    }
     
     // Show welcome notification on first install
     if (details.reason === 'install') {

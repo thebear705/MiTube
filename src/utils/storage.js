@@ -7,7 +7,12 @@
  */
 export async function getSettings(keys = null) {
   return new Promise((resolve, reject) => {
-    const keysToGet = keys || ['showTotalDuration', 'showEndTime', 'hideShorts', 'hideMemberOnly'];
+    const keysToGet = keys || [
+      'showTotalDuration', 'showEndTime', 'clearPlayed',
+      'miniPlayerButton', 'videoPlayerEndTime', 'timeLeftToggle',
+      'hideShorts', 'hideAutoDubbed', 'hideMemberOnly',
+      'dropdownStates', 'theme'
+    ];
     
     chrome.storage.sync.get(keysToGet, (result) => {
       if (chrome.runtime.lastError) {

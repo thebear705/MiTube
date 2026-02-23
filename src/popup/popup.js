@@ -4,10 +4,24 @@ import { getSettings, setSettings } from '../utils/storage.js';
 
 /** Popup DOM elements */
 const elements = {
+  // Settings toggles
   showTotalDuration: document.getElementById('showTotalDuration'),
   showEndTime: document.getElementById('showEndTime'),
+  clearPlayed: document.getElementById('clearPlayed'),
+  miniPlayerButton: document.getElementById('miniPlayerButton'),
+  videoPlayerEndTime: document.getElementById('videoPlayerEndTime'),
+  timeLeftToggle: document.getElementById('timeLeftToggle'),
   hideShorts: document.getElementById('hideShorts'),
+  hideAutoDubbed: document.getElementById('hideAutoDubbed'),
   hideMemberOnly: document.getElementById('hideMemberOnly'),
+  
+  // Dropdown elements
+  dropdownHeaders: document.querySelectorAll('.dropdown-header'),
+  playlistsContent: document.getElementById('playlists-content'),
+  videoPlayerContent: document.getElementById('videoPlayer-content'),
+  videoFeedContent: document.getElementById('videoFeed-content'),
+  
+  // Other elements
   status: document.getElementById('status'),
   resetSettings: document.getElementById('resetSettings'),
   themeToggle: document.getElementById('themeToggle')
@@ -15,6 +29,58 @@ const elements = {
 
 // Import default settings from shared constants
 import { DEFAULT_SETTINGS } from '../utils/constants.js';
+
+/**
+ * Update dropdown states based on settings
+ * @param {Object} dropdownStates - Object with dropdown states
+ */
+function updateDropdownStates(dropdownStates) {
+  // Playlists section
+  const playlistsSection = elements.playlistsContent.closest('.dropdown-section');
+  if (dropdownStates.playlists) {
+    playlistsSection.classList.add('expanded');
+  } else {
+    playlistsSection.classList.remove('expanded');
+  }
+  
+  // Video Player section
+  const videoPlayerSection = elements.videoPlayerContent.closest('.dropdown-section');
+  if (dropdownStates.videoPlayer) {
+    videoPlayerSection.classList.add('expanded');
+  } else {
+    videoPlayerSection.classList.remove('expanded');
+  }
+  
+  // Video Feed section
+  const videoFeedSection = elements.videoFeedContent.closest('.dropdown-section');
+  if (dropdownStates.videoFeed) {
+    videoFeedSection.classList.add('expanded');
+  } else {
+    videoFeedSection.classList.remove('expanded');
+  }
+}
+
+/**
+ * Handle dropdown toggle
+ * @param {Event} event - Click event
+ */
+async function handleDropdownToggle(event) {
+  const header = event.currentTarget;
+  const section = header.getAttribute('data-section');
+  const sectionElement = header.closest('.dropdown-section');
+  
+  // Toggle the expanded class
+  sectionElement.classList.toggle('expanded');
+  
+  // Update storage with new state
+  const currentSettings = await getSettings();
+  const newDropdownStates = {
+    ...currentSettings.dropdownStates,
+    [section]: sectionElement.classList.contains('expanded')
+  };
+  
+  await setSettings({ dropdownStates: newDropdownStates });
+}
 
 /**
  * Initialize the popup
@@ -46,24 +112,40 @@ async function init() {
  * @param {Object} settings - Current settings object
  */
 function updateUI(settings) {
-  // TODO: Can we use a loop to update all the settings in one line?
   // Update toggle states
   elements.showTotalDuration.checked = settings.showTotalDuration ?? DEFAULT_SETTINGS.showTotalDuration;
   elements.showEndTime.checked = settings.showEndTime ?? DEFAULT_SETTINGS.showEndTime;
+  elements.clearPlayed.checked = settings.clearPlayed ?? DEFAULT_SETTINGS.clearPlayed;
+  elements.miniPlayerButton.checked = settings.miniPlayerButton ?? DEFAULT_SETTINGS.miniPlayerButton;
+  elements.videoPlayerEndTime.checked = settings.videoPlayerEndTime ?? DEFAULT_SETTINGS.videoPlayerEndTime;
+  elements.timeLeftToggle.checked = settings.timeLeftToggle ?? DEFAULT_SETTINGS.timeLeftToggle;
   elements.hideShorts.checked = settings.hideShorts ?? DEFAULT_SETTINGS.hideShorts;
+  elements.hideAutoDubbed.checked = settings.hideAutoDubbed ?? DEFAULT_SETTINGS.hideAutoDubbed;
   elements.hideMemberOnly.checked = settings.hideMemberOnly ?? DEFAULT_SETTINGS.hideMemberOnly;
+  
+  // Update dropdown states
+  updateDropdownStates(settings.dropdownStates || DEFAULT_SETTINGS.dropdownStates);
 }
 
 /**
  * Set up event listeners for UI interactions
  */
 function setupEventListeners() {
-  // TODO: Can we use a loop here as well?
   // Toggle listeners
   elements.showTotalDuration.addEventListener('change', (e) => handleToggleChange('showTotalDuration', e.target.checked));
   elements.showEndTime.addEventListener('change', (e) => handleToggleChange('showEndTime', e.target.checked));
+  elements.clearPlayed.addEventListener('change', (e) => handleToggleChange('clearPlayed', e.target.checked));
+  elements.miniPlayerButton.addEventListener('change', (e) => handleToggleChange('miniPlayerButton', e.target.checked));
+  elements.videoPlayerEndTime.addEventListener('change', (e) => handleToggleChange('videoPlayerEndTime', e.target.checked));
+  elements.timeLeftToggle.addEventListener('change', (e) => handleToggleChange('timeLeftToggle', e.target.checked));
   elements.hideShorts.addEventListener('change', (e) => handleToggleChange('hideShorts', e.target.checked));
+  elements.hideAutoDubbed.addEventListener('change', (e) => handleToggleChange('hideAutoDubbed', e.target.checked));
   elements.hideMemberOnly.addEventListener('change', (e) => handleToggleChange('hideMemberOnly', e.target.checked));
+  
+  // Dropdown listeners
+  elements.dropdownHeaders.forEach(header => {
+    header.addEventListener('click', handleDropdownToggle);
+  });
   
   // Theme toggle
   elements.themeToggle.addEventListener('click', handleThemeToggle);

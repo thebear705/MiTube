@@ -2,8 +2,9 @@
 import { getSettings } from '../utils/storage.js';
 import { showTotalDuration, hideTotalDuration } from '../features/playlist_duration.js';
 import { showEndTime, hideEndTime } from '../features/playlist_end_time.js';
+import { hideShorts, showShorts, toggleShorts } from '../features/hide_shorts.js';
 import { debounce } from '../utils/time_utils.js';
-import { PERFORMANCE } from '../utils/constants.js';
+import { PERFORMANCE, YOUTUBE_SELECTORS } from '../utils/constants.js';
 
 /**
  * MiTube Content Script
@@ -23,6 +24,7 @@ let currentSettings = {
 
 let isInitialized = false;
 let playlistObserver = null;
+let shortsObserver = null;
 let settingsListener = null;
 
 // Performance optimization: Cache calculated values
@@ -79,11 +81,17 @@ async function initialize() {
     currentSettings = await getSettings();
     console.log('MiTube: Loaded settings:', currentSettings);
     
+    // Apply initial settings
+    applyInitialSettings();
+    
     // Set up settings change listener
     setupSettingsListener();
     
     // Start observing playlist
     startPlaylistObservation();
+    
+    // Start observing for shorts navigation element
+    startShortsObservation();
     
     isInitialized = true;
     console.log('MiTube: Content script initialized successfully');
@@ -137,6 +145,31 @@ function applySettingsChanges(changes) {
     } else {
       hideEndTime();
     }
+  }
+  
+  // Handle hide shorts setting
+  if ('hideShorts' in changes) {
+    toggleShorts(changes.hideShorts.newValue);
+  }
+}
+
+/**
+ * Apply initial settings when the content script loads
+ */
+function applyInitialSettings() {
+  // Apply playlist duration if enabled
+  if (currentSettings.showTotalDuration) {
+    showTotalDuration();
+  }
+  
+  // Apply playlist end time if enabled
+  if (currentSettings.showEndTime) {
+    showEndTime();
+  }
+  
+  // Apply hide shorts if enabled
+  if (currentSettings.hideShorts) {
+    toggleShorts(true);
   }
 }
 
@@ -194,6 +227,31 @@ function observePlaylist(targetNode) {
 }
 
 /**
+ * Start observing for shorts elements (sidebar and homepage)
+ */
+function startShortsObservation() {
+  // Try to find and hide shorts immediately
+  if (currentSettings.hideShorts) {
+    toggleShorts(true);
+  }
+  
+  // Set up observer to watch for shorts elements being added to DOM
+  if (shortsObserver) {
+    shortsObserver.disconnect();
+  }
+  
+  shortsObserver = new MutationObserver((mutationsList) => {
+    // Check if shorts elements exist and need to be hidden
+    if (currentSettings.hideShorts) {
+      toggleShorts(true);
+    }
+  });
+  
+  // Observe the entire document for shorts elements
+  shortsObserver.observe(document.body, { childList: true, subtree: true });
+}
+
+/**
  * Handle playlist content updates with debouncing and caching
  */
 const handlePlaylistUpdate = debounce(() => {
@@ -220,6 +278,11 @@ function cleanup() {
   if (playlistObserver) {
     playlistObserver.disconnect();
     playlistObserver = null;
+  }
+  
+  if (shortsObserver) {
+    shortsObserver.disconnect();
+    shortsObserver = null;
   }
   
   if (settingsListener) {

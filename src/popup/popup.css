@@ -2,7 +2,7 @@
 
 /* Light theme (default) */
 body {
-    --primary-color: #202329;
+    --primary-color: #ff0000;
     --secondary-color: #1877f2;
     --text-color: #1a1a1a;
     --text-muted: #666;
@@ -19,7 +19,7 @@ body {
 
 /* Dark theme */
 body[data-theme="dark"] {
-    --primary-color: #f0f0f0;
+    --primary-color: #ff0000;
     --secondary-color: #4f8cff;
     --text-color: #e4e4e4;
     --text-muted: #a0a0a0;
@@ -36,7 +36,7 @@ body[data-theme="dark"] {
 /* System theme detection */
 @media (prefers-color-scheme: dark) {
     body:not([data-theme="light"]) {
-        --primary-color: #f0f0f0;
+        --primary-color: #ff0000;
         --secondary-color: #4f8cff;
         --text-color: #e4e4e4;
         --text-muted: #a0a0a0;
@@ -76,19 +76,54 @@ body {
 /* Header Styles */
 .header {
     margin-bottom: 20px;
-    text-align: center;
+    text-align: left;
 }
 
-.header h1 {
-    font-size: 18px;
+.header-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 8px;
+}
+
+/* Logo Styles */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0px;
+    font-size: 20px;
     font-weight: 700;
-    color: var(--secondary-color);
-    margin-bottom: 4px;
+    color: var(--text-color);
+    margin: 0;
+}
+
+.logo-icon {
+    width: 24px;
+    height: 24px;
+}
+
+.logo-tube {
+    color: var(--primary-color);
+}
+
+/* Theme Switcher Styles */
+.theme-switcher {
+    display: flex;
+    align-items: center;
+    gap: 0px;
+}
+
+.theme-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-color);
 }
 
 .header p {
     font-size: 12px;
     color: var(--text-muted);
+    margin: 0;
 }
 
 /* Settings Container */
@@ -99,21 +134,96 @@ body {
     margin-bottom: 20px;
 }
 
+/* Dropdown Section Styles */
+.dropdown-section {
+    background-color: var(--card-bg);
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+}
+
+.dropdown-header {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background-color: var(--card-bg);
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: var(--text-color);
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.dropdown-header:hover {
+    background-color: var(--card-hover-bg);
+}
+
+.dropdown-header:focus {
+    outline: 2px solid rgba(24, 119, 242, 0.3);
+    outline-offset: 2px;
+}
+
+.dropdown-icon {
+    font-size: 16px;
+    margin-right: 8px;
+}
+
+.dropdown-title {
+    flex: 1;
+    text-align: left;
+}
+
+.dropdown-arrow {
+    font-size: 12px;
+    transition: transform 0.3s ease;
+    color: var(--text-muted);
+}
+
+.dropdown-section.expanded .dropdown-arrow {
+    transform: rotate(180deg);
+}
+
+.dropdown-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out, padding 0.3s ease;
+    padding: 0 16px;
+}
+
+.dropdown-section.expanded .dropdown-content {
+    max-height: 500px;
+    padding: 12px 16px 16px 16px;
+}
+
+/* Setting Item Styles */
 .setting-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
     padding: 12px;
-    background-color: var(--card-bg);
-    border-radius: 8px;
+    background-color: var(--bg-color);
+    border-radius: 6px;
     border: 1px solid var(--border-color);
     transition: all 0.2s ease;
     box-shadow: var(--shadow);
+    margin-bottom: 8px;
 }
 
 .setting-item:hover {
-    background-color: var(--card-hover-bg);
-    border-color: var(--border-color);
+    background-color: var(--card-bg);
+}
+
+.setting-item.disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.setting-item.disabled:hover {
+    background-color: var(--bg-color);
 }
 
 .setting-info {
@@ -237,13 +347,6 @@ body:not([data-theme]) .theme-toggle .icon-system {
 }
 
 /* Header content layout */
-.header-content {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-}
-
 .header h1 {
     margin: 0;
 }
@@ -307,7 +410,7 @@ input:checked + .slider:before {
     }
     
     .header h1 {
-        font-size: 16px;
+        font-size: 20px;
     }
     
     .setting-info h3 {

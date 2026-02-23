@@ -10,59 +10,147 @@
     <div class="container">
         <div class="header">
             <div class="header-content">
-                <h1>MiTube</h1>
-                <button id="themeToggle" class="theme-toggle" title="Toggle theme">
-                    <span class="icon-sun">☀️</span>
-                    <span class="icon-moon">🌙</span>
-                    <span class="icon-system">💻</span>
-                </button>
+                <h1 class="logo"><img src="../icons/icon48.png" alt="Mi" class="logo-icon"><span class="logo-tube">Tube</span></h1>
+                <div class="theme-switcher">
+                    <span class="theme-label">Theme</span>
+                    <button id="themeToggle" class="theme-toggle" title="Toggle theme">
+                        <span class="icon-sun">☀️</span>
+                        <span class="icon-moon">🌙</span>
+                        <span class="icon-system">💻</span>
+                    </button>
+                </div>
             </div>
-            <p>YouTube Playlist Enhancer</p>
+            <p class="subtitle">Tweaks to enhance your YouTube experience</p>
         </div>
         
         <div class="settings">
-            <div class="setting-item">
-                <div class="setting-info">
-                    <h3>Playlist Total Duration</h3>
-                    <p>Show cumulative duration of all videos in the playlist</p>
+            <!-- Playlists Section -->
+            <div class="dropdown-section">
+                <button class="dropdown-header" data-section="playlists" title="Click to expand/collapse">
+                    <span class="dropdown-icon">📁</span>
+                    <span class="dropdown-title">Playlists & Queues</span>
+                    <span class="dropdown-arrow">▼</span>
+                </button>
+                <div class="dropdown-content" id="playlists-content">
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h3>Total Duration</h3>
+                            <p>Show cumulative duration of all videos in the playlist</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="showTotalDuration">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h3>End Time</h3>
+                            <p>Show when the playlist will finish playing</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="showEndTime">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="setting-item disabled">
+                        <div class="setting-info">
+                            <h3>Clear Played</h3>
+                            <p>Remove videos that have been played from the Queue</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="clearPlayed" disabled>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
                 </div>
-                <label class="toggle-switch">
-                    <input type="checkbox" id="showTotalDuration">
-                    <span class="slider"></span>
-                </label>
             </div>
             
-            <div class="setting-item">
-                <div class="setting-info">
-                    <h3>Playlist End Time</h3>
-                    <p>Show when the playlist will finish playing</p>
+            <!-- Video Player Section -->
+            <div class="dropdown-section">
+                <button class="dropdown-header" data-section="videoPlayer" title="Click to expand/collapse">
+                    <span class="dropdown-icon">🎬</span>
+                    <span class="dropdown-title">Video Player</span>
+                    <span class="dropdown-arrow">▼</span>
+                </button>
+                <div class="dropdown-content" id="videoPlayer-content">
+                    <div class="setting-item disabled">
+                        <div class="setting-info">
+                            <h3>Mini Player Button</h3>
+                            <p>Add mini player button to video player</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="miniPlayerButton" disabled>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="setting-item disabled">
+                        <div class="setting-info">
+                            <h3>End Time</h3>
+                            <p>Show end time in video player</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="videoPlayerEndTime" disabled>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="setting-item disabled">
+                        <div class="setting-info">
+                            <h3>Time Left</h3>
+                            <p>Toggle between total time and time left in video player</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="timeLeftToggle" disabled>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
                 </div>
-                <label class="toggle-switch">
-                    <input type="checkbox" id="showEndTime">
-                    <span class="slider"></span>
-                </label>
             </div>
             
-            <div class="setting-item" style="display: none;">
-                <div class="setting-info">
-                    <h3>Hide Shorts</h3>
-                    <p>Filter out YouTube Shorts</p>
+            <!-- Video Feed & Search Results Section -->
+            <div class="dropdown-section">
+                <button class="dropdown-header" data-section="videoFeed" title="Click to expand/collapse">
+                    <span class="dropdown-icon">📺</span>
+                    <span class="dropdown-title">Video Feed & Search Results</span>
+                    <span class="dropdown-arrow">▼</span>
+                </button>
+                <div class="dropdown-content" id="videoFeed-content">
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h3>Hide Shorts</h3>
+                            <p>Hide Shorts from the navigation sidebar</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="hideShorts">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="setting-item disabled">
+                        <div class="setting-info">
+                            <h3>Hide Auto-Dubbed</h3>
+                            <p>Filter out auto-dubbed videos</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="hideAutoDubbed" disabled>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    
+                    <div class="setting-item disabled">
+                        <div class="setting-info">
+                            <h3>Hide Members Only</h3>
+                            <p>Filter out membership-restricted videos</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="hideMemberOnly" disabled>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
                 </div>
-                <label class="toggle-switch">
-                    <input type="checkbox" id="hideShorts">
-                    <span class="slider"></span>
-                </label>
-            </div>
-            
-            <div class="setting-item" style="display: none;">
-                <div class="setting-info">
-                    <h3>Hide Member-only Videos</h3>
-                    <p>Filter out membership-restricted videos</p>
-                </div>
-                <label class="toggle-switch">
-                    <input type="checkbox" id="hideMemberOnly">
-                    <span class="slider"></span>
-                </label>
             </div>
         </div>
         
