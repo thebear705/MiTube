@@ -1,14 +1,23 @@
-// playlist_end_time.js
+// playlist_end_time.js - Refactored with FeatureDisplayManager
 
 import { calculateTotalDuration } from './playlist_duration.js';
 import { formatEndTime, parseTimeToSeconds } from '../utils/time_utils.js';
-import { getPlaylistTitleElement, getCurrentVideoElapsedTime, getCurrentlyPlayingIndex } from '../utils/dom.js';
+import { getCurrentVideoElapsedTime, getCurrentlyPlayingIndex } from '../utils/dom.js';
 import { YOUTUBE_SELECTORS } from '../utils/constants.js';
-import { createInfoElement, removeElementById, insertAfter } from '../utils/dom.js';
-import { FEATURE_ELEMENT_IDS, STYLES } from '../utils/constants.js';
+import { endTimeDisplayManager } from '../utils/display.js';
+import { FEATURE_ELEMENT_IDS } from '../utils/constants.js';
 
 /**
- * Calculate the total duration of videos that have been watched (before current video)
+ * Playlist End Time Feature Module
+ * 
+ * This module handles the calculation and display of when the playlist will finish.
+ * It provides functions to calculate, display, and remove the end time display.
+ */
+
+const END_TIME_ELEMENT_ID = FEATURE_ELEMENT_IDS.endTime;
+
+/**
+ * Calculates the total duration of videos that have been watched (before current video)
  * @returns {number} Total watched duration in seconds
  */
 export function getWatchedVideosDurationBeforeCurrent() {
@@ -35,15 +44,6 @@ export function getWatchedVideosDurationBeforeCurrent() {
   
   return watchedDuration;
 }
-
-/**
- * Playlist End Time Feature Module
- * 
- * This module handles the calculation and display of when the playlist will finish.
- * It provides functions to calculate, display, and remove the end time display.
- */
-
-const END_TIME_ELEMENT_ID = FEATURE_ELEMENT_IDS.endTime;
 
 /**
  * Calculates the end time of the playlist
@@ -90,79 +90,26 @@ export function calculateEndTime(cache = null) {
 /**
  * Displays the end time in the playlist header
  * @param {Date} endDate - The calculated end date
+ * @returns {boolean} True if displayed successfully
  */
 export function displayEndTime(endDate) {
-  const titleElement = getPlaylistTitleElement();
-  
-  if (!titleElement) {
-    console.warn('MiTube: Could not find playlist title element to display end time');
-    return;
-  }
-
-  // Remove existing end time element if present
-  removeEndTime();
-
-  // Create end time display element using utility
   const endTimeText = formatEndTime(endDate);
-  const endTimeElement = createInfoElement(
-    END_TIME_ELEMENT_ID, 
-    endTimeText,
-    {
-      color: STYLES.endTimeColor,
-      marginTop: STYLES.endTimeMarginTop,
-      fontStyle: 'italic'
-    }
-  );
-
-  // Insert after the duration element if it exists, otherwise after title
-  const durationElement = document.getElementById(FEATURE_ELEMENT_IDS.totalDuration);
-  if (durationElement) {
-    insertAfter(endTimeElement, durationElement, durationElement.parentNode);
-  } else {
-    insertAfter(endTimeElement, titleElement, titleElement.parentNode);
-  }
+  return endTimeDisplayManager.display(endTimeText);
 }
 
 /**
  * Displays "Playlist has ended" message when playlist is finished
+ * @returns {boolean} True if displayed successfully
  */
 export function displayPlaylistEnded() {
-  const titleElement = getPlaylistTitleElement();
-  
-  if (!titleElement) {
-    console.warn('MiTube: Could not find playlist title element to display end time');
-    return;
-  }
-
-  // Remove existing end time element if present
-  removeEndTime();
-
-  // Create end time display element using utility
-  const endTimeElement = createInfoElement(
-    END_TIME_ELEMENT_ID, 
-    'End Time: Playlist has ended',
-    {
-      color: STYLES.endTimeColor,
-      marginTop: STYLES.endTimeMarginTop,
-      fontStyle: 'italic',
-      fontWeight: 'bold'
-    }
-  );
-
-  // Insert after the duration element if it exists, otherwise after title
-  const durationElement = document.getElementById(FEATURE_ELEMENT_IDS.totalDuration);
-  if (durationElement) {
-    insertAfter(endTimeElement, durationElement, durationElement.parentNode);
-  } else {
-    insertAfter(endTimeElement, titleElement, titleElement.parentNode);
-  }
+  return endTimeDisplayManager.display('End Time: Playlist has ended');
 }
 
 /**
  * Removes the end time display from the playlist
  */
 export function removeEndTime() {
-  removeElementById(END_TIME_ELEMENT_ID);
+  endTimeDisplayManager.remove();
 }
 
 /**

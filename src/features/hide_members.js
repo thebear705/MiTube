@@ -1,173 +1,66 @@
-// hide_members.js
+// hide_members.js - Refactored with VisibilityManager
+
+import { VisibilityManager } from '../utils/visibility.js';
 
 /**
  * Hide Members Only Feature Module
  * 
  * This module handles hiding members-only videos in:
  * 1. Homepage feed (ytd-rich-item-renderer)
- * 2. Search results
+ * 2. Search results (ytd-video-renderer)
+ * 3. Creator channel pages (ytd-shelf-renderer with members-only section)
  */
 
+// Badge text constant for members-only detection
+const MEMBERS_ONLY_BADGE = 'members only';
+
 /**
- * Gets all members-only video elements on the homepage feed
- * Finds ytd-rich-item-renderer elements that contain a badge with "Members only" text
- * @returns {Array} Array of ytd-rich-item-renderer elements that are members only
+ * Check if an element contains a members-only badge
+ * @param {Element} el - The element to check
+ * @returns {boolean} True if the element has a members-only badge
  */
-function getMembersOnlyHomeElements() {
-  // Find all rich item renderers on homepage
-  const richItems = document.querySelectorAll('ytd-rich-item-renderer');
-  
-  // Filter to find only those with "Members only" badge
-  const membersOnlyItems = [];
-  richItems.forEach(item => {
-    // Get all badges in this item
-    const badges = item.querySelectorAll('.yt-content-metadata-view-model__badge');
-    
-    // Loop through badges to find "Members only"
-    for (const badge of badges) {
-      const textContent = badge.textContent || badge.innerText || '';
-      if (textContent.toLowerCase().includes('members only')) {
-        membersOnlyItems.push(item);
-        break; // Found the badge, no need to check more
-      }
+function hasMembersOnlyBadge(el) {
+  const badges = el.querySelectorAll('.yt-content-metadata-view-model__badge');
+  for (const badge of badges) {
+    const text = (badge.textContent || badge.innerText || '').toLowerCase();
+    if (text.includes(MEMBERS_ONLY_BADGE)) {
+      return true;
     }
-  });
-  
-  return membersOnlyItems;
+  }
+  return false;
 }
 
-/**
- * Gets all members-only video elements in search results
- * Finds ytd-video-renderer elements that contain a badge with "Members only" text
- * @returns {Array} Array of ytd-video-renderer elements that are members only
- */
-function getMembersOnlySearchElements() {
-  // Find all video renderers in search results
-  const videoRenderers = document.querySelectorAll('ytd-video-renderer');
-  
-  // Filter to find only those with "Members only" badge
-  const membersOnlyItems = [];
-  videoRenderers.forEach(renderer => {
-    // Get all badges in this renderer
-    const badges = renderer.querySelectorAll('.yt-content-metadata-view-model__badge');
-    
-    // Loop through badges to find "Members only"
-    for (const badge of badges) {
-      const textContent = badge.textContent || badge.innerText || '';
-      if (textContent.toLowerCase().includes('members only')) {
-        membersOnlyItems.push(renderer);
-        break; // Found the badge, no need to check more
-      }
-    }
-  });
-  
-  return membersOnlyItems;
-}
-
-/**
- * Gets all members-only section elements on creator channel pages
- * Finds ytd-shelf-renderer elements that contain a link with title="Members-only videos"
- * @returns {Array} Array of ytd-shelf-renderer elements that are members-only sections
- */
-function getMembersOnlyChannelSectionElements() {
-  // Find all shelf renderers on the page
-  const shelfRenderers = document.querySelectorAll('ytd-shelf-renderer');
-  
-  // Filter to find only those with "Members-only videos" title
-  const membersOnlySections = [];
-  shelfRenderers.forEach(shelf => {
-    // Check if this shelf contains an anchor with title containing "Members-only videos"
-    const membersOnlyLink = shelf.querySelector('a[title*="Members-only videos" i]');
-    if (membersOnlyLink) {
-      membersOnlySections.push(shelf);
-    }
-  });
-  
-  return membersOnlySections;
-}
-
-/**
- * Hides all members-only videos on the homepage feed
- */
-function hideMembersOnlyHome() {
-  const membersElements = getMembersOnlyHomeElements();
-  
-  membersElements.forEach(element => {
-    element.style.display = 'none';
-  });
-}
-
-/**
- * Shows all members-only videos on the homepage feed
- */
-function showMembersOnlyHome() {
-  const membersElements = getMembersOnlyHomeElements();
-  
-  membersElements.forEach(element => {
-    element.style.display = '';
-  });
-}
-
-/**
- * Hides all members-only videos in search results
- */
-function hideMembersOnlySearch() {
-  const membersElements = getMembersOnlySearchElements();
-  
-  membersElements.forEach(element => {
-    element.style.display = 'none';
-  });
-}
-
-/**
- * Shows all members-only videos in search results
- */
-function showMembersOnlySearch() {
-  const membersElements = getMembersOnlySearchElements();
-  
-  membersElements.forEach(element => {
-    element.style.display = '';
-  });
-}
-
-/**
- * Hides all members-only sections on creator channel pages
- */
-function hideMembersOnlyChannelSection() {
-  const membersElements = getMembersOnlyChannelSectionElements();
-  
-  membersElements.forEach(element => {
-    element.style.display = 'none';
-  });
-}
-
-/**
- * Shows all members-only sections on creator channel pages
- */
-function showMembersOnlyChannelSection() {
-  const membersElements = getMembersOnlyChannelSectionElements();
-  
-  membersElements.forEach(element => {
-    element.style.display = '';
-  });
-}
+// Create a VisibilityManager instance for all members-only locations
+const membersManager = new VisibilityManager([
+  {
+    name: 'homepage',
+    selector: 'ytd-rich-item-renderer',
+    filterFn: hasMembersOnlyBadge
+  },
+  {
+    name: 'search_results',
+    selector: 'ytd-video-renderer',
+    filterFn: hasMembersOnlyBadge
+  },
+  {
+    name: 'channel_section',
+    selector: 'ytd-shelf-renderer',
+    filterFn: (el) => el.querySelector('a[title*="Members-only videos" i]') !== null
+  }
+]);
 
 /**
  * Hides members-only videos in all locations
  */
 export function hideMembersOnly() {
-  hideMembersOnlyHome();
-  hideMembersOnlySearch();
-  hideMembersOnlyChannelSection();
+  membersManager.hide();
 }
 
 /**
  * Shows members-only videos in all locations
  */
 export function showMembersOnly() {
-  showMembersOnlyHome();
-  showMembersOnlySearch();
-  showMembersOnlyChannelSection();
+  membersManager.show();
 }
 
 /**
@@ -175,11 +68,7 @@ export function showMembersOnly() {
  * @param {boolean} hide - True to hide, false to show
  */
 export function toggleMembersOnly(hide) {
-  if (hide) {
-    hideMembersOnly();
-  } else {
-    showMembersOnly();
-  }
+  membersManager.toggle(hide);
 }
 
 /**

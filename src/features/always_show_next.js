@@ -1,4 +1,6 @@
-// always_show_next.js
+// always_show_next.js - Refactored with createSimpleVisibilityManager
+
+import { createSimpleVisibilityManager } from '../utils/visibility.js';
 
 /**
  * Always Show Next Video Button Feature Module
@@ -6,34 +8,21 @@
  * This module handles always showing the next video button in the video player
  */
 
-/**
- * Gets the next video button element
- * @returns {Element|null} The ytp-next-button element, or null if not found
- */
-function getNextButtonElement() {
-  return document.querySelector('a.ytp-next-button');
-}
+// Create a simple visibility manager for the next button
+const nextButtonManager = createSimpleVisibilityManager('a.ytp-next-button');
 
 /**
  * Shows the next video button
  */
 export function showNextButton() {
-  const nextButton = getNextButtonElement();
-  
-  if (nextButton) {
-    nextButton.style.display = 'inline';
-  }
+  nextButtonManager.show();
 }
 
 /**
  * Hides the next video button
  */
 export function hideNextButton() {
-  const nextButton = getNextButtonElement();
-  
-  if (nextButton) {
-    nextButton.style.display = 'none';
-  }
+  nextButtonManager.hide();
 }
 
 /**
@@ -41,9 +30,5 @@ export function hideNextButton() {
  * @param {boolean} show - True to show, false to hide
  */
 export function toggleNextButton(show) {
-  if (show) {
-    showNextButton();
-  } else {
-    hideNextButton();
-  }
+  nextButtonManager.toggle(!show);
 }

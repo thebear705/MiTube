@@ -1,5 +1,53 @@
 // Shared constants for MiTube Chrome Extension
 
+// ============================================================================
+// Feature Text Constants (Magic Strings)
+// ============================================================================
+
+/**
+ * Text constants used for feature detection and display
+ * Centralized to avoid scattered magic strings throughout the codebase
+ */
+export const FEATURE_TEXT = {
+  // Badge text for detection (lowercase for case-insensitive matching)
+  MEMBERS_ONLY: 'members only',
+  SHORTS: 'shorts',
+  
+  // Display text
+  PLAYLIST_ENDED: 'Playlist has ended',
+};
+
+/**
+ * YouTube element selectors for feature detection
+ */
+export const ELEMENT_SELECTORS = {
+  // Badge selectors
+  BADGE: '.yt-content-metadata-view-model__badge',
+  
+  // Content renderers
+  RICH_ITEM: 'ytd-rich-item-renderer',
+  VIDEO_RENDERER: 'ytd-video-renderer',
+  PLAYLIST_ITEM: 'ytd-playlist-panel-video-renderer',
+  SHELF_RENDERER: 'ytd-shelf-renderer',
+  
+  // Navigation
+  GUIDE_ENTRY: 'ytd-guide-entry-renderer',
+  
+  // Tabs
+  TAB_SHAPE: 'yt-tab-shape',
+  
+  // Filters
+  CHIP_RENDERER: 'yt-chip-cloud-chip-renderer',
+  SEARCH_FILTER: 'ytd-search-filter-renderer',
+  
+  // Reels
+  REEL_SHELF: 'ytd-reel-shelf-renderer',
+};
+
+// ============================================================================
+// Default Settings
+// ============================================================================
+
 /**
  * Default settings for the extension
  * Used across background.js, popup.js, and content scripts

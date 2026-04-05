@@ -2,6 +2,57 @@
 
 import { FEATURE_ELEMENT_IDS, STYLES, YOUTUBE_SELECTORS } from './constants.js';
 
+// ============================================================================
+// Badge Detection Utilities
+// ============================================================================
+
+/**
+ * Find elements that contain a specific badge text
+ * @param {string} selector - CSS selector for parent elements to check
+ * @param {string} badgeText - Text to search for in badges (case-insensitive)
+ * @param {string} [badgeSelector='.yt-content-metadata-view-model__badge'] - CSS selector for badge elements
+ * @returns {Array<Element>} Array of elements that contain the badge
+ */
+export function findElementsByBadgeText(selector, badgeText, badgeSelector = '.yt-content-metadata-view-model__badge') {
+  const elements = document.querySelectorAll(selector);
+  const matching = [];
+  
+  elements.forEach(el => {
+    const badges = el.querySelectorAll(badgeSelector);
+    for (const badge of badges) {
+      const text = (badge.textContent || badge.innerText || '').toLowerCase();
+      if (text.includes(badgeText.toLowerCase())) {
+        matching.push(el);
+        break; // Found the badge, no need to check more
+      }
+    }
+  });
+  
+  return matching;
+}
+
+/**
+ * Check if an element contains a specific badge text
+ * @param {Element} element - The element to check
+ * @param {string} badgeText - Text to search for in badges (case-insensitive)
+ * @param {string} [badgeSelector='.yt-content-metadata-view-model__badge'] - CSS selector for badge elements
+ * @returns {boolean} True if the element contains the badge
+ */
+export function hasBadgeText(element, badgeText, badgeSelector = '.yt-content-metadata-view-model__badge') {
+  const badges = element.querySelectorAll(badgeSelector);
+  for (const badge of badges) {
+    const text = (badge.textContent || badge.innerText || '').toLowerCase();
+    if (text.includes(badgeText.toLowerCase())) {
+      return true;
+    }
+  }
+  return false;
+}
+
+// ============================================================================
+// Element Creation and Manipulation
+// ============================================================================
+
 /**
  * Create a styled info element for displaying duration or end time
  * @param {string} id - The element ID

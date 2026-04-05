@@ -6,7 +6,7 @@ import { hideShorts, showShorts, toggleShorts } from '../features/hide_shorts.js
 import { hideMembersOnly, showMembersOnly, toggleMembersOnly, observeAndHideMembers } from '../features/hide_members.js';
 import { showNextButton, hideNextButton, toggleNextButton } from '../features/always_show_next.js';
 import { debounce } from '../utils/time_utils.js';
-import { PERFORMANCE, YOUTUBE_SELECTORS } from '../utils/constants.js';
+import { PERFORMANCE, YOUTUBE_SELECTORS, DEFAULT_SETTINGS } from '../utils/constants.js';
 
 /**
  * MiTube Content Script
@@ -15,14 +15,8 @@ import { PERFORMANCE, YOUTUBE_SELECTORS } from '../utils/constants.js';
  * Handles settings, feature toggles, and DOM observation.
  */
 
-// State management
-// TODO: This should be set the DEFAULT_SETTINGS from constants.js
-let currentSettings = {
-  showTotalDuration: false,
-  showEndTime: true,
-  hideShorts: false,
-  hideMemberOnly: false
-};
+// State management - initialized with defaults from constants
+let currentSettings = { ...DEFAULT_SETTINGS };
 
 let isInitialized = false;
 let playlistObserver = null;

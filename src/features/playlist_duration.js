@@ -1,10 +1,9 @@
-// playlist_duration.js
+// playlist_duration.js - Refactored with FeatureDisplayManager
 
 import { totalTimeInSeconds, secondsToStringTime } from '../utils/time_utils.js';
-import { getVideoTimeElements, getPlaylistTitleElement } from '../utils/dom.js';
-import { YOUTUBE_SELECTORS } from '../utils/constants.js';
-import { createInfoElement, removeElementById, insertAfter } from '../utils/dom.js';
-import { FEATURE_ELEMENT_IDS, STYLES } from '../utils/constants.js';
+import { getVideoTimeElements } from '../utils/dom.js';
+import { durationDisplayManager } from '../utils/display.js';
+import { FEATURE_ELEMENT_IDS } from '../utils/constants.js';
 
 /**
  * Playlist Duration Feature Module
@@ -48,38 +47,18 @@ export function calculateTotalDuration(cache = null) {
 /**
  * Displays the total duration in the playlist header
  * @param {number} totalSeconds - Total duration in seconds
+ * @returns {boolean} True if displayed successfully
  */
 export function displayTotalDuration(totalSeconds) {
-  const titleElement = getPlaylistTitleElement();
-  
-  if (!titleElement) {
-    console.warn('MiTube: Could not find playlist title element to display duration');
-    return;
-  }
-
-  // Remove existing duration element if present
-  removeTotalDuration();
-
-  // Create duration display element using utility
   const durationText = secondsToStringTime(totalSeconds);
-  const durationElement = createInfoElement(
-    DURATION_ELEMENT_ID, 
-    `Total Duration: ${durationText}`,
-    {
-      color: STYLES.durationColor,
-      marginTop: STYLES.marginTop
-    }
-  );
-
-  // Insert after the title element
-  insertAfter(durationElement, titleElement, titleElement.parentNode);
+  return durationDisplayManager.display(`Total Duration: ${durationText}`);
 }
 
 /**
  * Removes the total duration display from the playlist
  */
 export function removeTotalDuration() {
-  removeElementById(DURATION_ELEMENT_ID);
+  durationDisplayManager.remove();
 }
 
 /**
@@ -88,11 +67,7 @@ export function removeTotalDuration() {
  * @param {number|null} totalSeconds - Total duration in seconds, or null to remove
  */
 export function updateTotalDuration(totalSeconds) {
-  if (totalSeconds === null) {
-    removeTotalDuration();
-  } else {
-    displayTotalDuration(totalSeconds);
-  }
+  durationDisplayManager.update(totalSeconds, (s) => `Total Duration: ${secondsToStringTime(s)}`);
 }
 
 /**
