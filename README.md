@@ -4,7 +4,7 @@ A Chrome extension that enhances your YouTube experience with powerful features 
 
 ## Features
 
-### Playlist Features
+### Playlist and Queue Features
 - **Playlist Total Duration** - Shows cumulative duration of all videos in a playlist
 - **Playlist End Time** - Displays when the playlist will finish playing
 
@@ -18,6 +18,12 @@ Hides YouTube Shorts from multiple locations:
 - Shorts filter option in the Filters popup
 - Shorts tab on creator channel pages
 - Reel shelf on creator channel pages
+
+### Hide Members Only Videos
+Hides Members Only Videos from the following locations:
+- Homepage
+- Creator Channel Pages
+
 
 ### UI & Theme
 - Light, Dark, and System theme support
@@ -39,55 +45,16 @@ Hides YouTube Shorts from multiple locations:
 
 5. Select the `MiTube/src` directory
 
-## Development
-
-The extension uses:
-- Chrome Extension Manifest V3
-- JavaScript/HTML/CSS for popup UI
-- Content scripts for YouTube page interaction
-- Chrome Storage API for settings persistence
-
-### Project Structure
-```
-MiTube/
-├── src/
-│   ├── manifest.json           # Extension manifest
-│   ├── background.js           # Background service worker
-│   ├── content/
-│   │   ├── content.js          # Main content script
-│   │   └── loader.js          # Content loader
-│   ├── features/
-│   │   ├── playlist_duration.js    # Playlist duration feature
-│   │   ├── playlist_end_time.js   # Playlist end time feature
-│   │   └── hide_shorts.js         # Hide shorts feature
-│   ├── popup/
-│   │   ├── popup.html         # Popup UI
-│   │   ├── popup.css          # Popup styling
-│   │   └── popup.js           # Popup logic
-│   ├── utils/
-│   │   ├── constants.js       # Shared constants
-│   │   ├── dom.js            # DOM utilities
-│   │   ├── storage.js        # Storage management
-│   │   └── time_utils.js     # Time utilities
-│   └── icons/                 # Extension icons
-├── tests/                     # Test files
-└── README.md                  # This file
-```
-
-## Planned Fetaures
+## Planned Features
 - Video Player
     - Add next button when Video Player is Fullscreen
     - End Time 
     - Mini Player Button
     - Show Time Left
 
+## Contributing
 
-
-## Reloading the Extension
-
-After making changes to the source code:
-1. Go to `chrome://extensions`
-2. Click the **Reload** button on the MiTube extension card
+We welcome contributions! Please see our [CONTRIBUTING.md](CONTRIBUTING.md) file for guidelines on how to contribute to this project.
 
 ## License
 
