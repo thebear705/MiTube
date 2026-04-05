@@ -32,6 +32,7 @@
                     <span class="dropdown-arrow">▼</span>
                 </button>
                 <div class="dropdown-content" id="playlists-content">
+                    <!-- Total Duration -->
                     <div class="setting-item">
                         <div class="setting-info">
                             <h3>Total Duration</h3>
@@ -42,7 +43,7 @@
                             <span class="slider"></span>
                         </label>
                     </div>
-                    
+                    <!-- End Time -->
                     <div class="setting-item">
                         <div class="setting-info">
                             <h3>End Time</h3>
@@ -53,7 +54,7 @@
                             <span class="slider"></span>
                         </label>
                     </div>
-                    
+                    <!-- Clear Played -->
                     <div class="setting-item disabled">
                         <div class="setting-info">
                             <h3>Clear Played</h3>
@@ -75,6 +76,18 @@
                     <span class="dropdown-arrow">▼</span>
                 </button>
                 <div class="dropdown-content" id="videoPlayer-content">
+                    <!-- Next Video Button -->
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h3>Always Show Next Video Button </h3>
+                            <p>Always show the next video button (SHIFT + N) in the video player</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="alwaysShowNextButton">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <!-- Mini Player -->
                     <div class="setting-item disabled">
                         <div class="setting-info">
                             <h3>Mini Player Button</h3>
@@ -85,7 +98,7 @@
                             <span class="slider"></span>
                         </label>
                     </div>
-                    
+                    <!-- End Time -->
                     <div class="setting-item disabled">
                         <div class="setting-info">
                             <h3>End Time</h3>
@@ -96,7 +109,7 @@
                             <span class="slider"></span>
                         </label>
                     </div>
-                    
+                    <!-- Time Left -->
                     <div class="setting-item disabled">
                         <div class="setting-info">
                             <h3>Time Left</h3>
@@ -106,7 +119,7 @@
                             <input type="checkbox" id="timeLeftToggle" disabled>
                             <span class="slider"></span>
                         </label>
-                    </div>
+                    </div>                  
                 </div>
             </div>
             
@@ -118,6 +131,7 @@
                     <span class="dropdown-arrow">▼</span>
                 </button>
                 <div class="dropdown-content" id="videoFeed-content">
+                    <!-- Hide Shorts -->
                     <div class="setting-item">
                         <div class="setting-info">
                             <h3>Hide Shorts</h3>
@@ -128,7 +142,18 @@
                             <span class="slider"></span>
                         </label>
                     </div>
-                    
+                    <!-- Hide Members Only -->
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <h3>Hide Members Only</h3>
+                            <p>Filter out membership-restricted videos</p>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="hideMemberOnly">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <!-- Hide Auto-Dubbed -->
                     <div class="setting-item disabled">
                         <div class="setting-info">
                             <h3>Hide Auto-Dubbed</h3>
@@ -140,16 +165,6 @@
                         </label>
                     </div>
                     
-                    <div class="setting-item disabled">
-                        <div class="setting-info">
-                            <h3>Hide Members Only</h3>
-                            <p>Filter out membership-restricted videos</p>
-                        </div>
-                        <label class="toggle-switch">
-                            <input type="checkbox" id="hideMemberOnly" disabled>
-                            <span class="slider"></span>
-                        </label>
-                    </div>
                 </div>
             </div>
         </div>

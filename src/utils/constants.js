@@ -14,6 +14,7 @@ export const DEFAULT_SETTINGS = {
   miniPlayerButton: false,
   videoPlayerEndTime: false,
   timeLeftToggle: false,
+  alwaysShowNextButton: false,
   
   // Video Feed & Search Results
   hideShorts: false,

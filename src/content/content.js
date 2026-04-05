@@ -3,6 +3,8 @@ import { getSettings } from '../utils/storage.js';
 import { showTotalDuration, hideTotalDuration } from '../features/playlist_duration.js';
 import { showEndTime, hideEndTime } from '../features/playlist_end_time.js';
 import { hideShorts, showShorts, toggleShorts } from '../features/hide_shorts.js';
+import { hideMembersOnly, showMembersOnly, toggleMembersOnly, observeAndHideMembers } from '../features/hide_members.js';
+import { showNextButton, hideNextButton, toggleNextButton } from '../features/always_show_next.js';
 import { debounce } from '../utils/time_utils.js';
 import { PERFORMANCE, YOUTUBE_SELECTORS } from '../utils/constants.js';
 
@@ -25,6 +27,7 @@ let currentSettings = {
 let isInitialized = false;
 let playlistObserver = null;
 let shortsObserver = null;
+let membersObserver = null;
 let settingsListener = null;
 
 // Performance optimization: Cache calculated values
@@ -93,6 +96,9 @@ async function initialize() {
     // Start observing for shorts navigation element
     startShortsObservation();
     
+    // Start observing for members-only elements
+    startMembersObservation();
+    
     isInitialized = true;
     console.log('MiTube: Content script initialized successfully');
   } catch (error) {
@@ -151,6 +157,16 @@ function applySettingsChanges(changes) {
   if ('hideShorts' in changes) {
     toggleShorts(changes.hideShorts.newValue);
   }
+  
+  // Handle hide members only setting
+  if ('hideMemberOnly' in changes) {
+    toggleMembersOnly(changes.hideMemberOnly.newValue);
+  }
+  
+  // Handle always show next button setting
+  if ('alwaysShowNextButton' in changes) {
+    toggleNextButton(changes.alwaysShowNextButton.newValue);
+  }
 }
 
 /**
@@ -170,6 +186,16 @@ function applyInitialSettings() {
   // Apply hide shorts if enabled
   if (currentSettings.hideShorts) {
     toggleShorts(true);
+  }
+  
+  // Apply hide members only if enabled
+  if (currentSettings.hideMemberOnly) {
+    toggleMembersOnly(true);
+  }
+  
+  // Apply always show next button if enabled
+  if (currentSettings.alwaysShowNextButton) {
+    toggleNextButton(true);
   }
 }
 
@@ -252,6 +278,19 @@ function startShortsObservation() {
 }
 
 /**
+ * Start observing for members-only elements (homepage and search results)
+ */
+function startMembersObservation() {
+  // Clean up existing observer if any
+  if (membersObserver) {
+    membersObserver.disconnect();
+  }
+  
+  // Use the observeAndHideMembers function which handles both initial hiding and observation
+  membersObserver = observeAndHideMembers(() => currentSettings.hideMemberOnly);
+}
+
+/**
  * Handle playlist content updates with debouncing and caching
  */
 const handlePlaylistUpdate = debounce(() => {
@@ -283,6 +322,11 @@ function cleanup() {
   if (shortsObserver) {
     shortsObserver.disconnect();
     shortsObserver = null;
+  }
+  
+  if (membersObserver) {
+    membersObserver.disconnect();
+    membersObserver = null;
   }
   
   if (settingsListener) {

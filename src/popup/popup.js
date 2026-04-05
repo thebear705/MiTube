@@ -14,6 +14,7 @@ const elements = {
   hideShorts: document.getElementById('hideShorts'),
   hideAutoDubbed: document.getElementById('hideAutoDubbed'),
   hideMemberOnly: document.getElementById('hideMemberOnly'),
+  alwaysShowNextButton: document.getElementById('alwaysShowNextButton'),
   
   // Dropdown elements
   dropdownHeaders: document.querySelectorAll('.dropdown-header'),
@@ -122,6 +123,7 @@ function updateUI(settings) {
   elements.hideShorts.checked = settings.hideShorts ?? DEFAULT_SETTINGS.hideShorts;
   elements.hideAutoDubbed.checked = settings.hideAutoDubbed ?? DEFAULT_SETTINGS.hideAutoDubbed;
   elements.hideMemberOnly.checked = settings.hideMemberOnly ?? DEFAULT_SETTINGS.hideMemberOnly;
+  elements.alwaysShowNextButton.checked = settings.alwaysShowNextButton ?? DEFAULT_SETTINGS.alwaysShowNextButton;
   
   // Update dropdown states
   updateDropdownStates(settings.dropdownStates || DEFAULT_SETTINGS.dropdownStates);
@@ -141,6 +143,7 @@ function setupEventListeners() {
   elements.hideShorts.addEventListener('change', (e) => handleToggleChange('hideShorts', e.target.checked));
   elements.hideAutoDubbed.addEventListener('change', (e) => handleToggleChange('hideAutoDubbed', e.target.checked));
   elements.hideMemberOnly.addEventListener('change', (e) => handleToggleChange('hideMemberOnly', e.target.checked));
+  elements.alwaysShowNextButton.addEventListener('change', (e) => handleToggleChange('alwaysShowNextButton', e.target.checked));
   
   // Dropdown listeners
   elements.dropdownHeaders.forEach(header => {
@@ -231,13 +234,14 @@ function applyTheme(theme) {
   
   if (theme === 'light') {
     document.body.setAttribute('data-theme', 'light');
-  } else if (theme === 'dark') {
+  } 
+  else if (theme === 'dark') {
     document.body.setAttribute('data-theme', 'dark');
   } else {
     // System theme - remove attribute to let CSS media query handle it
   }
   
-  // Update icon visibility
+  // Update icon visibility based on selected theme
   updateThemeIcon(theme);
 }
 
@@ -276,7 +280,7 @@ async function handleResetSettings() {
     
     // Show success status
     showStatus('Settings reset to defaults', 'success');
-    
+    console.log('MiTube: Settings reset to defaults')
     // Note: No need to send message to content script
     // The chrome.storage.onChanged listener in content.js handles updates automatically
   } catch (error) {
@@ -313,7 +317,8 @@ function getSettingLabel(settingKey) {
     showTotalDuration: 'Playlist Total Duration',
     showEndTime: 'Playlist End Time',
     hideShorts: 'Hide Shorts',
-    hideMemberOnly: 'Hide Member-only Videos'
+    hideMemberOnly: 'Hide Member-only Videos',
+    alwaysShowNextButton: 'Always Show Next Video'
   };
   
   return labels[settingKey] || settingKey;

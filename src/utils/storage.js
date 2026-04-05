@@ -11,6 +11,7 @@ export async function getSettings(keys = null) {
       'showTotalDuration', 'showEndTime', 'clearPlayed',
       'miniPlayerButton', 'videoPlayerEndTime', 'timeLeftToggle',
       'hideShorts', 'hideAutoDubbed', 'hideMemberOnly',
+      'alwaysShowNextButton',
       'dropdownStates', 'theme'
     ];
     
