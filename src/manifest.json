@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
   "name": "MiTube",
-  "version": "0.0.5",
-  "description": "Enhance your YouTube playlist experience with duration tracking and end time prediction",
+  "version": "0.1.0",
+  "description": "Enjoy a cleaner YouTube. Playlist/Queue duration tracking, end time prediction and many more fetaures",
   "icons": {
     "16": "icons/icon16.png",
     "40": "icons/icon48.png",
@@ -13,9 +13,6 @@
     "activeTab",
     "scripting",
     "notifications"
-  ],
-  "host_permissions": [
-    "https://www.youtube.com/*"
   ],
   "content_scripts": [
     {

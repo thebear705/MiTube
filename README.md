@@ -24,14 +24,18 @@ Hides Members Only Videos from the following locations:
 - Homepage
 - Creator Channel Pages
 
-
-### UI & Theme
-- Light, Dark, and System theme support
-- Persistent settings (settings are saved and restored)
-- Expandable/collapsible settings sections
-
 ## Installation
 
+### Chrome Store (Updates Automatically)
+
+This extension is published to the [Chrome Web Store](https://chromewebstore.google.com/detail/oicajjednghahaaojadldfjdddnglkgd) for easy installation and auto updates when new features are added. If you don't mind, please take time to review it on the Chrome Web Store page after installing and using it for while.
+
+<a href="https://chromewebstore.google.com/detail/oicajjednghahaaojadldfjdddnglkgd">
+  <img src="https://developer.chrome.com/static/docs/webstore/branding/image/iNEddTyWiMfLSwFD6qGq.png" alt="Available in the Chrome Web Store" height="60">
+</a>
+
+
+### Manual Installation (No Auto Updates)
 1. Clone the repository:
    ```bash
    git clone https://github.com/thebear705/MiTube.git
@@ -45,12 +49,23 @@ Hides Members Only Videos from the following locations:
 
 5. Select the `MiTube/src` directory
 
+## Show Your Support
+
+I've made this extension free open source so you can fork and edit it as you please. If you found this extension helpful please show support by [Buying Me A Coffee ☕️](https://www.buymeacoffee.com/thebe) so that I can continue to update the app with new features and bug fixes.
+
+<a href="https://www.buymeacoffee.com/thebe" target="_blank">
+  <img src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png" alt="Buy Me a Coffee" style="height: 60px !important;width: 217px !important;">
+</a>
+
+
+
 ## Planned Features
-- Video Player
-    - Add next button when Video Player is Fullscreen
+- **Video Player**
     - End Time 
     - Mini Player Button
-    - Show Time Left
+    - Toggle between Total Time and Time Left of the video
+
+
 
 ## Contributing
 
