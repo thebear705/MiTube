@@ -123,7 +123,7 @@ export const YOUTUBE_SELECTORS = {
   playlistHeader: '.header.style-scope.ytd-playlist-panel-renderer',
   
   // Video time elements in playlist
-  videoTimeElements: '.yt-badge-shape__text',
+  videoTimeElements: '.ytBadgeShapeText, .yt-badge-shape__text',
   videoDuration: '.ytd-thumbnail-overlay-time-status-renderer',
   
   // Playlist items
