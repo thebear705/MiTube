@@ -5,6 +5,7 @@ import { showEndTime, hideEndTime } from '../features/playlist_end_time.js';
 import { hideShorts, showShorts, toggleShorts } from '../features/hide_shorts.js';
 import { hideMembersOnly, showMembersOnly, toggleMembersOnly, observeAndHideMembers } from '../features/hide_members.js';
 import { showNextButton, hideNextButton, toggleNextButton } from '../features/always_show_next.js';
+import { enableChapterButtons, disableChapterButtons, toggleChapterButtons } from '../features/chapter_buttons.js';
 import { debounce } from '../utils/time_utils.js';
 import { PERFORMANCE, YOUTUBE_SELECTORS, DEFAULT_SETTINGS } from '../utils/constants.js';
 
@@ -161,6 +162,11 @@ function applySettingsChanges(changes) {
   if ('alwaysShowNextButton' in changes) {
     toggleNextButton(changes.alwaysShowNextButton.newValue);
   }
+  
+  // Handle chapter buttons setting
+  if ('enableChapterButtons' in changes) {
+    toggleChapterButtons(changes.enableChapterButtons.newValue);
+  }
 }
 
 /**
@@ -190,6 +196,11 @@ function applyInitialSettings() {
   // Apply always show next button if enabled
   if (currentSettings.alwaysShowNextButton) {
     toggleNextButton(true);
+  }
+  
+  // Apply chapter buttons if enabled
+  if (currentSettings.enableChapterButtons) {
+    toggleChapterButtons(true);
   }
 }
 

@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "MiTube",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Enjoy a cleaner YouTube. Playlist/Queue duration tracking, end time prediction and many more fetaures",
   "icons": {
     "16": "icons/icon16.png",

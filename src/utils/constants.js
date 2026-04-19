@@ -63,6 +63,7 @@ export const DEFAULT_SETTINGS = {
   videoPlayerEndTime: false,
   timeLeftToggle: false,
   alwaysShowNextButton: false,
+  enableChapterButtons: true,
   
   // Video Feed & Search Results
   hideShorts: false,
