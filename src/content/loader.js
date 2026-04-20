@@ -1,5 +1,4 @@
-// TODO: Do we really need a separate loader? Maybe we can just put this
-// code in content.js?
+// We Really need this. Cauases errors when not done sthis way.
 
 (async () => {
   const src = chrome.runtime.getURL('content/content.js');

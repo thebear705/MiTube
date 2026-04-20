@@ -13,16 +13,71 @@ import { VisibilityManager } from '../utils/visibility.js';
 /**
  * Create chapter navigation button
  * @param {string} direction - 'prev' or 'next'
+ * @param {string} [chapterTitle] - Title of the chapter for tooltip
  * @returns {HTMLElement} Button element
  */
-function createChapterButton(direction) {
+/**
+ * Create custom tooltip element
+ * @param {string} text - Tooltip text
+ * @returns {HTMLElement} Tooltip element
+ */
+function createTooltip(text) {
+  const tooltip = document.createElement('div');
+  tooltip.className = 'miTube-tooltip';
+  tooltip.textContent = text;
+  tooltip.style.cssText = `
+    position: absolute;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: Arial, sans-serif;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.1s;
+  `;
+  return tooltip;
+}
+
+/**
+ * Create chapter navigation button
+ * @param {string} direction - 'prev' or 'next'
+ * @param {string} [chapterTitle] - Title of the chapter for tooltip
+ * @returns {HTMLElement} Button element
+ */
+function createChapterButton(direction, chapterTitle = '') {
   const button = document.createElement('button');
   button.className = 'ytp-play-button ytp-button';
-  
+  button.style.position = 'relative';
+
+  let tooltipText = '';
+  if (chapterTitle) {
+    tooltipText = `${direction === 'prev' ? 'Previous chapter' : 'Next chapter'}: ${chapterTitle}`;
+  } else {
+    tooltipText = `${direction === 'prev' ? 'Previous Chapter' : 'Next Chapter'}`;
+  }
+
+  // Create tooltip
+  const tooltip = createTooltip(tooltipText);
+
+  // Add hover event listeners
+  button.addEventListener('mouseenter', () => {
+    // Position tooltip above button, centered
+    const rect = button.getBoundingClientRect();
+    tooltip.style.left = `${rect.left + (rect.width / 2) - (tooltip.offsetWidth / 2)}px`;
+    tooltip.style.top = `${rect.top - tooltip.offsetHeight - 8}px`;
+    tooltip.style.opacity = '1';
+  });
+
+  button.addEventListener('mouseleave', () => {
+    tooltip.style.opacity = '0';
+  });
+
   if (direction === 'prev') {
     button.id = 'miTube-prev-chapter-button';
-    button.title = 'Previous Chapter';
-    button.setAttribute('aria-label', 'Previous Chapter');
     button.innerHTML = `
       <svg width="36px" height="36px" viewBox="0 0 36 36" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
           <g id="icons_Q2" transform="translate(1.5, 1.9466) scale(-1, 1) translate(-33, 0)" fill="white">
@@ -35,8 +90,6 @@ function createChapterButton(direction) {
     `;
   } else {
     button.id = 'miTube-next-chapter-button';
-    button.title = 'Next Chapter';
-    button.setAttribute('aria-label', 'Next Chapter');
     button.innerHTML = `
       <svg width="36px" height="36px" viewBox="0 0 36 36" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
           <g id="icons_Q2" transform="translate(1.5, 1.9466)" fill="white">
@@ -48,26 +101,29 @@ function createChapterButton(direction) {
       </svg>
     `;
   }
-  
+
+  // Add tooltip to page
+  document.body.appendChild(tooltip);
+
   button.addEventListener('click', () => {
     const activeChapter = document.querySelector('ytd-macro-markers-list-item-renderer[active]');
-    
+
     if (!activeChapter) return;
-    
+
     if (direction === 'prev') {
       const video = document.querySelector('video.html5-main-video');
       const currentTime = video ? video.currentTime : 0;
-      
+
       const activeLink = activeChapter.querySelector('a#endpoint');
       let chapterStartTime = 0;
-      
+
       if (activeLink) {
         const urlParams = new URLSearchParams(activeLink.href);
         chapterStartTime = parseInt(urlParams.get('t')) || 0;
       }
-      
+
       const timeIntoChapter = currentTime - chapterStartTime;
-      
+
       if (timeIntoChapter > 5) {
         activeLink.click();
       } else {
@@ -76,6 +132,7 @@ function createChapterButton(direction) {
           const prevLink = prevChapter.querySelector('a#endpoint');
           if (prevLink) prevLink.click();
         } else {
+          // Restart current chapter
           activeLink.click();
         }
       }
@@ -87,7 +144,7 @@ function createChapterButton(direction) {
       }
     }
   });
-  
+
   return button;
 }
 
@@ -120,8 +177,30 @@ export function showChapterButtons() {
   if (existingPrev) existingPrev.remove();
   if (existingNext) existingNext.remove();
 
-  const prevButton = createChapterButton('prev');
-  const nextButton = createChapterButton('next');
+  const activeChapter = document.querySelector('ytd-macro-markers-list-item-renderer[active]');
+  let prevChapterTitle = '';
+  let nextChapterTitle = '';
+
+  if (activeChapter) {
+    const prevChapter = activeChapter.previousElementSibling;
+    if (prevChapter) {
+      const prevTitleElement = prevChapter.querySelector('h4.macro-markers');
+      if (prevTitleElement) {
+        prevChapterTitle = prevTitleElement.textContent.trim();
+      }
+    }
+
+    const nextChapter = activeChapter.nextElementSibling;
+    if (nextChapter) {
+      const nextTitleElement = nextChapter.querySelector('h4.macro-markers');
+      if (nextTitleElement) {
+        nextChapterTitle = nextTitleElement.textContent.trim();
+      }
+    }
+  }
+
+  const prevButton = createChapterButton('prev', prevChapterTitle);
+  const nextButton = createChapterButton('next', nextChapterTitle);
 
   targetChapterContainer.parentNode.insertBefore(prevButton, targetChapterContainer);
   targetChapterContainer.parentNode.insertBefore(nextButton, targetChapterContainer.nextSibling);
