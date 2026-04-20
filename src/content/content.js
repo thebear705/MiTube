@@ -5,7 +5,7 @@ import { showEndTime, hideEndTime } from '../features/playlist_end_time.js';
 import { hideShorts, showShorts, toggleShorts } from '../features/hide_shorts.js';
 import { hideMembersOnly, showMembersOnly, toggleMembersOnly, observeAndHideMembers } from '../features/hide_members.js';
 import { showNextButton, hideNextButton, toggleNextButton } from '../features/always_show_next.js';
-import { enableChapterButtons, disableChapterButtons, toggleChapterButtons } from '../features/chapter_buttons.js';
+import { showChapterButtons, hideChapterButtons, toggleChapterButtons } from '../features/chapter_buttons.js';
 import { debounce } from '../utils/time_utils.js';
 import { PERFORMANCE, YOUTUBE_SELECTORS, DEFAULT_SETTINGS } from '../utils/constants.js';
 
@@ -23,6 +23,7 @@ let isInitialized = false;
 let playlistObserver = null;
 let shortsObserver = null;
 let membersObserver = null;
+let chapterObserver = null;
 let settingsListener = null;
 
 // Performance optimization: Cache calculated values
@@ -93,6 +94,9 @@ async function initialize() {
     
     // Start observing for members-only elements
     startMembersObservation();
+    
+    // Start observing for chapter container elements
+    startChapterObservation();
     
     isInitialized = true;
     console.log('MiTube: Content script initialized successfully');
@@ -176,31 +180,43 @@ function applyInitialSettings() {
   // Apply playlist duration if enabled
   if (currentSettings.showTotalDuration) {
     showTotalDuration();
+  } else {
+    hideTotalDuration();
   }
   
   // Apply playlist end time if enabled
   if (currentSettings.showEndTime) {
     showEndTime();
+  } else {
+    hideEndTime();
   }
   
   // Apply hide shorts if enabled
   if (currentSettings.hideShorts) {
     toggleShorts(true);
+  } else {
+    toggleShorts(false);
   }
   
   // Apply hide members only if enabled
   if (currentSettings.hideMemberOnly) {
     toggleMembersOnly(true);
+  } else {
+    toggleMembersOnly(false);
   }
   
   // Apply always show next button if enabled
   if (currentSettings.alwaysShowNextButton) {
     toggleNextButton(true);
+  } else {
+    toggleNextButton(false);
   }
   
   // Apply chapter buttons if enabled
   if (currentSettings.enableChapterButtons) {
-    toggleChapterButtons(true);
+    showChapterButtons();
+  } else {
+    hideChapterButtons();
   }
 }
 
@@ -296,6 +312,31 @@ function startMembersObservation() {
 }
 
 /**
+ * Start observing for chapter container elements in video player
+ */
+function startChapterObservation() {
+  // Try to show chapter buttons immediately if enabled
+  if (currentSettings.enableChapterButtons) {
+    showChapterButtons();
+  }
+  
+  // Clean up existing observer if any
+  if (chapterObserver) {
+    chapterObserver.disconnect();
+  }
+  
+  chapterObserver = new MutationObserver((mutationsList) => {
+    // Only update buttons if feature is enabled
+    if (currentSettings.enableChapterButtons) {
+      showChapterButtons();
+    }
+  });
+  
+  // Observe entire document for chapter container elements
+  chapterObserver.observe(document.body, { childList: true, subtree: true, attributes: true });
+}
+
+/**
  * Handle playlist content updates with debouncing and caching
  */
 const handlePlaylistUpdate = debounce(() => {
@@ -332,6 +373,11 @@ function cleanup() {
   if (membersObserver) {
     membersObserver.disconnect();
     membersObserver = null;
+  }
+  
+  if (chapterObserver) {
+    chapterObserver.disconnect();
+    chapterObserver = null;
   }
   
   if (settingsListener) {

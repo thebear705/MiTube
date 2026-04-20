@@ -112,6 +112,24 @@ export const STYLES = {
 };
 
 /**
+ * Human-readable labels for settings
+ * Single source of truth used by popup and other UI components
+ */
+export const SETTING_LABELS = {
+  showTotalDuration: 'Playlist Total Duration',
+  showEndTime: 'Playlist End Time',
+  clearPlayed: 'Clear Played',
+  miniPlayerButton: 'Mini Player Button',
+  videoPlayerEndTime: 'Video Player End Time',
+  timeLeftToggle: 'Time Left Toggle',
+  hideShorts: 'Hide Shorts',
+  hideAutoDubbed: 'Hide Auto-Dubbed Videos',
+  hideMemberOnly: 'Hide Member-only Videos',
+  alwaysShowNextButton: 'Always Show Next Video',
+  enableChapterButtons: 'Chapter Navigation Buttons'
+};
+
+/**
  * YouTube DOM selectors
  * Centralized for consistency and easier maintenance
  */
