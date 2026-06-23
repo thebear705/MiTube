@@ -106,9 +106,6 @@ async function handleDropdownToggle(event) {
   
   sectionElement.classList.toggle('expanded');
   
-  // Update UI when dropdown expands to ensure toggles have correct state
-  updateUI(await getSettings());
-  
   const currentSettings = await getSettings();
   await setSettings({
     dropdownStates: {

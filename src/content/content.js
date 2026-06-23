@@ -4,6 +4,7 @@ import { showTotalDuration, hideTotalDuration } from '../features/playlist_durat
 import { showEndTime, hideEndTime } from '../features/playlist_end_time.js';
 import { hideShorts, showShorts, toggleShorts } from '../features/hide_shorts.js';
 import { hideMembersOnly, showMembersOnly, toggleMembersOnly, observeAndHideMembers } from '../features/hide_members.js';
+import { hideAutoDubbed, showAutoDubbed, toggleAutoDubbed, observeAndHideAutoDubbed } from '../features/hide_auto_dubbed.js';
 import { showNextButton, hideNextButton, toggleNextButton } from '../features/always_show_next.js';
 import { showChapterButtons, hideChapterButtons, toggleChapterButtons } from '../features/chapter_buttons.js';
 import { debounce } from '../utils/time_utils.js';
@@ -23,6 +24,7 @@ let isInitialized = false;
 let playlistObserver = null;
 let shortsObserver = null;
 let membersObserver = null;
+let autoDubbedObserver = null;
 let chapterObserver = null;
 let settingsListener = null;
 
@@ -97,6 +99,8 @@ async function initialize() {
     
     // Start observing for chapter container elements
     startChapterObservation();
+  // Start observing for auto-dubbed videos
+  startAutoDubbedObservation();
     
     isInitialized = true;
     console.log('MiTube: Content script initialized successfully');
@@ -386,5 +390,14 @@ function cleanup() {
   }
   
   isInitialized = false;
+}
+// Start observing for auto-dubbed videos
+function startAutoDubbedObservation() {
+  // Clean up existing observer if any
+  if (autoDubbedObserver) {
+    autoDubbedObserver.disconnect();
+  }
+  // Use the observeAndHideAutoDubbed function which handles both initial hiding and observation
+  autoDubbedObserver = observeAndHideAutoDubbed(() => currentSettings.hideAutoDubbed);
 }
 // END: FUNCTIONS

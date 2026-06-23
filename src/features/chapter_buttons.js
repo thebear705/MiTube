@@ -45,20 +45,14 @@ function createTooltip(text) {
 /**
  * Create chapter navigation button
  * @param {string} direction - 'prev' or 'next'
- * @param {string} [chapterTitle] - Title of the chapter for tooltip
  * @returns {HTMLElement} Button element
  */
-function createChapterButton(direction, chapterTitle = '') {
+function createChapterButton(direction) {
   const button = document.createElement('button');
   button.className = 'ytp-play-button ytp-button';
   button.style.position = 'relative';
 
-  let tooltipText = '';
-  if (chapterTitle) {
-    tooltipText = `${direction === 'prev' ? 'Previous chapter' : 'Next chapter'}: ${chapterTitle}`;
-  } else {
-    tooltipText = `${direction === 'prev' ? 'Previous Chapter' : 'Next Chapter'}`;
-  }
+  let tooltipText = `${direction === 'prev' ? 'Previous Chapter' : 'Next Chapter'}`;
 
   // Create tooltip
   const tooltip = createTooltip(tooltipText);
@@ -149,6 +143,23 @@ function createChapterButton(direction, chapterTitle = '') {
 }
 
 /**
+ * Check if chapters are actually available
+ * @returns {boolean} True if chapters exist, false otherwise
+ */
+function chaptersExist() {
+  // Check for chapter items (individual chapters)
+  const chapterItems = document.querySelectorAll('ytd-macro-markers-list-item-renderer');
+  
+  // Also check for chapter containers that might be hidden
+  const chapterContainers = document.querySelectorAll('.ytp-chapter-container');
+  
+  // If we have chapter items or visible containers, chapters exist
+  return chapterItems.length > 0 || Array.from(chapterContainers).some(container => {
+    return container.offsetParent !== null && window.getComputedStyle(container).display !== 'none';
+  });
+}
+
+/**
  * Inject chapter buttons next to the first visible chapter container
  */
 export function showChapterButtons() {
@@ -156,6 +167,11 @@ export function showChapterButtons() {
   const existingNext = document.getElementById('miTube-next-chapter-button');
 
   if (existingPrev && existingNext) {
+    return;
+  }
+
+  // First check if chapters actually exist
+  if (!chaptersExist()) {
     return;
   }
 
@@ -203,7 +219,7 @@ export function showChapterButtons() {
   const nextButton = createChapterButton('next', nextChapterTitle);
 
   targetChapterContainer.parentNode.insertBefore(prevButton, targetChapterContainer);
-  targetChapterContainer.parentNode.insertBefore(nextButton, targetChapterContainer.nextSibling);
+  targetChapterContainer.parentNode.insertBefore(nextButton, targetChapterContainer);
 }
 
 /**
