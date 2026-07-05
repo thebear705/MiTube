@@ -12,9 +12,12 @@ export const FEATURE_TEXT = {
   // Badge text for detection (lowercase for case-insensitive matching)
   MEMBERS_ONLY: 'members only',
   SHORTS: 'shorts',
+  // AUTO_DUBBED = 'auto-dubbed',
+  // DUBBED = 'dubbed',
   
   // Display text
   PLAYLIST_ENDED: 'Playlist has ended',
+  
 };
 
 /**

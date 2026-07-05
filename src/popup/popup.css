@@ -59,7 +59,7 @@ body[data-theme="dark"] {
 }
 
 body {
-    width: 320px;
+    width: 420px;
     height: auto;
     background-color: var(--bg-color);
     color: var(--text-color);
@@ -402,7 +402,8 @@ input:checked + .slider:before {
 /* Responsive Design */
 @media (max-width: 360px) {
     body {
-        width: 280px;
+        width: 360px;
+        max-height: 600px;
     }
     
     .setting-item {
